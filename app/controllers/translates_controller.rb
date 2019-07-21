@@ -7,7 +7,7 @@ class TranslatesController < ApplicationController
   end
 
   def create
-    @images = []
+    @ships_images = []
 
     doc = Nokogiri::HTML( open( params['url'] ) )
 
@@ -44,16 +44,15 @@ class TranslatesController < ApplicationController
           ship_pics << OpenStruct.new( { klass: :upgrade, pic: upgrade['image'] } )
         end
 
-        @images << ship_pics
+        @ships_images << ship_pics
       end
 
-      squadrons_pics = []
+      @squadrons_pics = []
       data['squadrons'].each do |squadron|
         download_pic squadron['image']
-        squadrons_pics << OpenStruct.new( { klass: :squadron, pic: squadron['image'] } )
+        @squadrons_pics << OpenStruct.new( { klass: :squadron, pic: squadron['image'] } )
       end
 
-      @images << squadrons_pics
     end
   end
 

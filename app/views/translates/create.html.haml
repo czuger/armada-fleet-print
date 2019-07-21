@@ -1,4 +1,4 @@
-- @images.each_with_index do |images_list, i|
+- @ships_images.each_with_index do |images_list, i|
   - images_list.each do |img_data|
     = image_tag "/pics/#{img_data.pic}", class: img_data.klass
 
@@ -6,6 +6,11 @@
 
   - if i % 2 == 1
     .pagebreak
+
+.pagebreak
+
+- @squadrons_pics.each do |img_data|
+  = image_tag "/pics/#{img_data.pic}", class: img_data.klass
 
 .footer
   %span.footer-element
