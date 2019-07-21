@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
-  resource :translate, only: [ :show, :create ]
+  resource :translates, only: [:show, :create ]
 
   root 'translates#show'
 
