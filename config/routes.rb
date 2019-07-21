@@ -3,4 +3,6 @@ Rails.application.routes.draw do
 
   resource :translate, only: [ :show, :create ]
 
+  root 'translates#show'
+
 end
