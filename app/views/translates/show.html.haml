@@ -1,8 +1,18 @@
 %h1
-  Armada print
+  Impression de flotte armada
 
-%p
-  Ne fonctionne qu'avec le site : https://armada.ryankingston.com/
+%ul
+  %li
+    Allez sur le site
+    = link_to( 'https://armada.ryankingston.com/', 'https://armada.ryankingston.com/', target: '_blank' )
+  %li
+    Créez une flotte
+  %li
+    Copiez le lien dans la barre d'url
+  %li
+    Collez le en dessous et cliquez sur "Go". (ça peut prendre du temps : 30 secondes au max).
+  %li
+    Imprimez la page générée
 
 = form_tag translates_path do
   .row

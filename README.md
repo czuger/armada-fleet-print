@@ -1,2 +1,5 @@
 # armada-fleet-print
-A site that allow to have a best print of armada fleet
+
+A site that allow to print of armada fleet created with https://armada.ryankingston.com/ with cards pictures.
+
+https://armada-print.ieroe.com/
