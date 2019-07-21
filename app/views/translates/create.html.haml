@@ -1,6 +1,8 @@
-- @images.each do |images_list|
-  - images_list.each do |img|
-    = image_tag "/pics/#{img}"
+- @images.each_with_index do |images_list, i|
+  - images_list.each do |img_data|
+    = image_tag "/pics/#{img_data.pic}", class: img_data.klass
 
   %hr
-  .pagebreak
+
+  - if i % 2 == 1
+    .pagebreak

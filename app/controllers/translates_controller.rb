@@ -1,4 +1,5 @@
 require 'open-uri'
+require 'ostruct'
 
 class TranslatesController < ApplicationController
 
@@ -28,13 +29,13 @@ class TranslatesController < ApplicationController
       data['ships'].each do |ship|
         ship_pics = []
         download_pic ship['image']
-        ship_pics << ship['image']
+        ship_pics << OpenStruct.new( { klass: :ship, pic: ship['image'] } )
 
         ship['upgrades'].each do |_, upgrade|
           next unless upgrade
           # p upgrade
           download_pic upgrade['image']
-          ship_pics << upgrade['image']
+          ship_pics << OpenStruct.new( { klass: :upgrade, pic: upgrade['image'] } )
         end
 
         @images << ship_pics
@@ -43,7 +44,7 @@ class TranslatesController < ApplicationController
       squadrons_pics = []
       data['squadrons'].each do |squadron|
         download_pic squadron['image']
-        squadrons_pics << squadron['image']
+        squadrons_pics << OpenStruct.new( { klass: :squadron, pic: squadron['image'] } )
       end
 
       @images << squadrons_pics
