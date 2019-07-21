@@ -1,12 +1,14 @@
+require 'open-uri'
+
 class TranslatesController < ApplicationController
 
   def show
   end
 
   def create
-    doc = Nokogiri::HTML( open( params['url'] ) )
+    @images = []
 
-    # pp doc
+    doc = Nokogiri::HTML( open( params['url'] ) )
 
     doc.search('script').each do |script|
       next if script.children.empty?
@@ -24,19 +26,27 @@ class TranslatesController < ApplicationController
       end
 
       data['ships'].each do |ship|
+        ship_pics = []
         download_pic ship['image']
+        ship_pics << ship['image']
 
         ship['upgrades'].each do |_, upgrade|
           next unless upgrade
           # p upgrade
           download_pic upgrade['image']
+          ship_pics << upgrade['image']
         end
+
+        @images << ship_pics
       end
 
+      squadrons_pics = []
       data['squadrons'].each do |squadron|
         download_pic squadron['image']
+        squadrons_pics << squadron['image']
       end
 
+      @images << squadrons_pics
     end
   end
 
