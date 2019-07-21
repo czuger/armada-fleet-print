@@ -16,10 +16,10 @@ ActiveRecord::Schema.define(version: 2019_07_21_095544) do
   enable_extension "plpgsql"
 
   create_table "images", force: :cascade do |t|
-    t.string "path"
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["path"], name: "index_images_on_path", unique: true
+    t.index ["name"], name: "index_images_on_name", unique: true
   end
 
 end
