@@ -24,19 +24,35 @@ class TranslatesController < ApplicationController
       end
 
       data['ships'].each do |ship|
-        p ship['image']
+        download_pic ship['image']
 
         ship['upgrades'].each do |_, upgrade|
           next unless upgrade
           # p upgrade
-          p upgrade['image']
+          download_pic upgrade['image']
         end
       end
 
       data['squadrons'].each do |squadron|
-        p squadron['image']
+        download_pic squadron['image']
       end
 
+    end
+  end
+
+  private
+
+  def download_pic( pic_name )
+    FileUtils.mkpath( 'public/pics' )
+
+    local_path = "public/pics/#{pic_name}"
+
+    unless File.exist?( local_path )
+      open( "https://armada.ryankingston.com/img/cards/#{pic_name}") do |image|
+        File.open("public/pics/#{pic_name}", 'wb') do |file|
+          file.write(image.read)
+        end
+      end
     end
   end
 
