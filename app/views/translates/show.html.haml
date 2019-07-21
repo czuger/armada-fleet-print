@@ -1,0 +1,14 @@
+%h1
+  Armada print
+
+%p
+  Ne fonctionne qu'avec le site : https://armada.ryankingston.com/
+
+= form_tag translates_path do
+  .row
+    .col-10
+      = text_field_tag :url, nil, class: 'form-control'
+    .col
+      = button_tag :submit, class: 'btn btn-primary btn-block' do
+        Go
+
