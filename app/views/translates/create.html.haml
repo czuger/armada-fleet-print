@@ -6,3 +6,15 @@
 
   - if i % 2 == 1
     .pagebreak
+
+.footer
+  %span.footer-element
+    = @name if @name
+
+  %span.footer-element
+    - if @total && @squadron_ratio
+      = "#{@total} pts, squads #{@squadron_ratio}%"
+
+  %span.footer-element
+    Printed with https://armada-print.ieroe.com
+

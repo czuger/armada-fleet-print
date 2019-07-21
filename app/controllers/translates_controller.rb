@@ -22,9 +22,15 @@ class TranslatesController < ApplicationController
 
       data = JSON.parse( m[1] )
 
+      # pp data
+
       File.open('tmp/fleet.txt','w') do |f|
         PP.pp(data,f)
       end
+
+      @name = data['name']
+      @total = data['points']['total']
+      @squadron_ratio = ((data['points']['squadron'].to_f * 100) / @total.to_f).round(1)
 
       data['ships'].each do |ship|
         ship_pics = []
