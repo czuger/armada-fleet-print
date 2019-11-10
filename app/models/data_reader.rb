@@ -14,25 +14,22 @@ class DataReader
 		@squadron_ratio = ((@data['points']['squadron'].to_f * 100) / @total.to_f).round(1)
 
 		process_ships
-
-		read_squadrons_counts
 		process_squadrons
 
-		true
+		self
 	end
 
 	private
-
-	def read_squadrons_counts
-		# pp @doc.css( '.card squadron' )
-	end
 
 	def process_squadrons
 		@squadrons_pics = []
 
 		@data['squadrons'].each do |squadron|
 			download_pic squadron['image']
-			@squadrons_pics << OpenStruct.new( { klass: :squadron, pic: squadron['image'] } )
+
+			1.upto( squadron['quantity'].to_i ).each do
+				@squadrons_pics << OpenStruct.new( { klass: :squadron, pic: squadron['image'] } )
+			end
 		end
 	end
 
@@ -60,7 +57,7 @@ class DataReader
 	def download_data( url )
 		@doc = Nokogiri::HTML( open( url ) )
 
-		# pp doc
+		# pp @doc
 
 		@doc.search('script').each do |script|
 			next if script.children.empty?
