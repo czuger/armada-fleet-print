@@ -86,9 +86,9 @@ class DataReader
 
 	# Download picture if not already downloaded
 	def download_pic( pic_name )
-		FileUtils.mkpath( 'public/pics' )
+		FileUtils.mkpath( 'pics' )
 
-		local_path = "public/pics/#{pic_name}"
+		local_path = "pics/#{pic_name}"
 
 		unless File.exist?( local_path )
 			URI.open( "https://armada.ryankingston.com/img/cards/#{pic_name}") do |image|
