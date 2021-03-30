@@ -1,0 +1,36 @@
+%h1
+  Impression de flotte Armada
+
+.alert.alert-danger
+  Pour utiliser ce site, il faut impérativement avoir crée un compte sur
+  %a{ href: 'https://armada.ryankingston.com/', target: '_blank' }
+    https://armada.ryankingston.com/
+
+%ul
+  %li
+    Allez sur le site
+    %a{ href: 'https://armada.ryankingston.com/', target: '_blank' }
+      https://armada.ryankingston.com/
+  %li
+    Créez une flotte.
+  %li
+    Sauvegardez la (IMPORTANT !).
+  %li
+    Copiez le lien dans la barre d'url.
+  %li
+    Collez le en dessous et cliquez sur "Go". (ça peut prendre du temps : 30 secondes au max).
+  %li
+    Imprimez la page générée.
+-#
+-#- form_tag '/translate' do
+-#  .row
+-#    .col-10
+-#      = text_field_tag :url, nil, class: 'form-control'
+-#    .col
+-#      = button_tag :submit, class: 'btn btn-primary btn-block' do
+-#        Go
+
+%form{ action: 'print', method: 'post' }
+  .form-group
+    %input#exampleInputEmail1.form-control{:placeholder => 'https://armada.ryankingston.com/<yourfleet>', :type => 'text', :name => 'url'}
+  %button.btn.btn-primary{:type => 'submit'} Submit
