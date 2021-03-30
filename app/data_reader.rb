@@ -1,4 +1,8 @@
 require 'open-uri'
+require 'pp'
+require 'nokogiri'
+require 'json'
+require 'fileutils'
 
 class DataReader
 
@@ -55,7 +59,7 @@ class DataReader
 
 	# Download and parse data
 	def download_data( url )
-		@doc = Nokogiri::HTML( open( url ) )
+		@doc = Nokogiri::HTML( URI.open( url ) )
 
 		# pp @doc
 
@@ -72,11 +76,11 @@ class DataReader
 
 			# pp data
 
-			File.open('tmp/fleet.txt','w') do |f|
-				PP.pp(@data,f)
-
-				# pp @data
-			end
+			# File.open('tmp/fleet.txt','w') do |f|
+			# 	PP.pp(@data,f)
+      #
+			# 	# pp @data
+			# end
 		end
 	end
 
@@ -87,8 +91,8 @@ class DataReader
 		local_path = "public/pics/#{pic_name}"
 
 		unless File.exist?( local_path )
-			open( "https://armada.ryankingston.com/img/cards/#{pic_name}") do |image|
-				File.open("public/pics/#{pic_name}", 'wb') do |file|
+			URI.open( "https://armada.ryankingston.com/img/cards/#{pic_name}") do |image|
+				File.open("pics/#{pic_name}", 'wb') do |file|
 					file.write(image.read)
 				end
 			end
