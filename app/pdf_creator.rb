@@ -1,6 +1,9 @@
 require 'prawn'
 require_relative 'data_reader'
 
+# TODO : use explicit blocs for prawn to have functions.
+# Count lines, to avoid half blank page.
+# White circle + black number for squadrons.
 
 class PdfCreator
 
@@ -14,7 +17,7 @@ class PdfCreator
   end
 
   def create_pdf
-    dr = DataReader.new.download( 'https://armada.ryankingston.com/fleet/136912/' )
+    dr = DataReader.new.download( 'https://armada.ryankingston.com/fleet/138656/' )
 
     Prawn::Document.generate('result.pdf') do
 
@@ -82,6 +85,23 @@ class PdfCreator
           end
         end
       end
+
+      page_string = 'page <page> of <total>'
+      page_options = {
+        at: [bounds.right - 150, 0],
+        width: 150,
+        align: :right,
+        start_count_at: 1,
+      }
+      number_pages page_string, page_options
+
+      name_string = "#{dr.name} (#{dr.squadrons_total}/#{dr.total})"
+      name_options = {
+        at: [bounds.left, 0],
+        align: :left,
+      }
+      number_pages name_string, name_options
+
     end
   end
 end

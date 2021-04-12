@@ -6,7 +6,7 @@ require 'fileutils'
 
 class DataReader
 
-	attr_reader :ships_images, :name, :total, :squadrons_pics, :squadron_ratio
+	attr_reader :ships_images, :name, :total, :squadrons_pics, :squadron_ratio, :squadrons_total
 
 	def download( url )
 		# puts 'About to download'
@@ -15,6 +15,7 @@ class DataReader
 
 		@name = @data['name']
 		@total = @data['points']['total']
+		@squadrons_total = @data['points']['squadron']
 		@squadron_ratio = ((@data['points']['squadron'].to_f * 100) / @total.to_f).round(1)
 
 		process_ships
