@@ -5,7 +5,6 @@ require_relative 'libs/footer'
 require_relative 'libs/print_ships'
 
 # TODO : Count lines, to avoid half blank page.
-# White circle + black number for squadrons.
 
 class PdfCreator
 

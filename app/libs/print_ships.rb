@@ -21,6 +21,12 @@ def print_ships(dr, pdf_doc)
       if img_data.klass == :upgrade
         pdf_doc.image "pics/#{img_data.pic}", width: 100, height: 150, at: [x_pos, ship_cursor_pos]
         x_pos += 110
+
+        if x_pos >= 210 + 110*3
+          ship_cursor_pos -= 160
+          x_pos = 210
+        end
+
       else
         ship_cursor_pos = pdf_doc.cursor
         pdf_doc.image "pics/#{img_data.pic}", width: 200
