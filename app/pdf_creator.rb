@@ -4,8 +4,7 @@ require_relative 'libs/print_squadrons'
 require_relative 'libs/footer'
 require_relative 'libs/print_ships'
 
-# TODO : use explicit blocs for prawn to have functions.
-# Count lines, to avoid half blank page.
+# TODO : Count lines, to avoid half blank page.
 # White circle + black number for squadrons.
 
 class PdfCreator
