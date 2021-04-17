@@ -9,7 +9,7 @@ def print_squadrons(dr, pdf_doc)
 
   dr.squadrons_pics.each_with_index do |squadron, ship_index|
 
-    p squadron
+    # p squadron
     # p img_data
 
     # p x_pos * x_factor, y_pos * y_factor

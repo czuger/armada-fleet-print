@@ -23,7 +23,12 @@ class PdfCreator
 
       pages_count += print_ships(dr, pdf_doc)
 
+      p(pages_count)
+      p(pages_count % 2 == 0)
+
+
       pdf_doc.start_new_page
+
       # move_up 600
 
       print_squadrons(dr, pdf_doc)
