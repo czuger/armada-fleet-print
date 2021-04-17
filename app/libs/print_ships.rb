@@ -1,8 +1,15 @@
 def print_ships(dr, pdf_doc)
   pages = 1
+  ships = 0
+
   dr.ships_images.each_with_index do |images_list, ship_index|
 
-    p images_list
+    # p images_list
+    if ships >= 2
+      pdf_doc.start_new_page
+      pages += 1
+      ships = 0
+    end
 
     x_pos = 210
     ship_cursor_pos = pdf_doc.cursor
@@ -21,15 +28,7 @@ def print_ships(dr, pdf_doc)
       end
     end
 
-    # p ship_index
-    # p (ship_index % 2) == 0
-
-    if ship_index % 2 == 1
-      pdf_doc.start_new_page
-      pages += 1
-    end
-
-
+    ships += 1
   end
 
   pages
