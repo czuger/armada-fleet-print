@@ -1,4 +1,6 @@
 def footer(dr, pdf_doc)
+  pdf_doc.font_size 12
+
   page_string = 'page <page> of <total>'
   page_options = {
       at: [pdf_doc.bounds.right - 150, 0],
