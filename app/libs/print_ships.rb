@@ -1,5 +1,4 @@
 def print_ships(dr, pdf_doc)
-  pages = 1
   ships = 0
 
   dr.ships_images.each_with_index do |images_list, ship_index|
@@ -7,7 +6,6 @@ def print_ships(dr, pdf_doc)
     # p images_list
     if ships >= 2
       pdf_doc.start_new_page
-      pages += 1
       ships = 0
     end
 
@@ -37,5 +35,5 @@ def print_ships(dr, pdf_doc)
     ships += 1
   end
 
-  pages
+  ships
 end

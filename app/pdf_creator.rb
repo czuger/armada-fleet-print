@@ -17,21 +17,24 @@ class PdfCreator
     dr = DataReader.new.download( url )
 
     Prawn::Document.generate('/tmp/fleet.pdf') do |pdf_doc|
-      pages_count = 0
+      ships_count = print_ships(dr, pdf_doc)
 
-      pages_count += print_ships(dr, pdf_doc)
-
-      # p(pages_count)
-      # p(pages_count % 2 == 0)
-
-
-      pdf_doc.start_new_page
+      y_pos = 0
+      if(ships_count % 2 == 0)
+        pdf_doc.start_new_page
+      else
+        y_pos = 1
+      end
 
       # move_up 600
 
-      print_squadrons(dr, pdf_doc)
+      print_squadrons(dr, pdf_doc, y_pos)
 
       footer(dr, pdf_doc)
     end
   end
+end
+
+if __FILE__ == $0
+  PdfCreator.new.create_pdf 'https://armada.ryankingston.com/fleet/138888/'
 end
