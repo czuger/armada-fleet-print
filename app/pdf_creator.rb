@@ -14,16 +14,16 @@ class PdfCreator
 
   end
 
-  def create_pdf
-    dr = DataReader.new.download( 'https://armada.ryankingston.com/fleet/138627/' )
+  def create_pdf(url)
+    dr = DataReader.new.download( url )
 
-    Prawn::Document.generate('result.pdf') do |pdf_doc|
+    Prawn::Document.generate('/tmp/fleet.pdf') do |pdf_doc|
       pages_count = 0
 
       pages_count += print_ships(dr, pdf_doc)
 
-      p(pages_count)
-      p(pages_count % 2 == 0)
+      # p(pages_count)
+      # p(pages_count % 2 == 0)
 
 
       pdf_doc.start_new_page
@@ -36,5 +36,3 @@ class PdfCreator
     end
   end
 end
-
-PdfCreator.new.create_pdf
