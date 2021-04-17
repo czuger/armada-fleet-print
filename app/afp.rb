@@ -4,7 +4,7 @@ require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'haml'
 
-require_relative 'data_reader'
+require_relative 'libs/data_reader'
 
 include ActionView::Helpers
 
