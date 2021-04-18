@@ -1,30 +1,17 @@
-require 'rubygems'
-require 'action_view'
+# myapp.rb
 require 'sinatra'
-require 'sinatra/reloader' if development?
-require 'haml'
+require_relative 'pdf_creator'
 
-require_relative 'libs/data_reader'
+settings = File.read('settings.json')
+settings = JSON.parse(settings)
 
-include ActionView::Helpers
+set :port, settings['port']
 
 get '/' do
   haml :show
 end
 
 post '/print' do
-  # p params
-
-  dr = DataReader.new.download( params['url'] )
-  # dr = DataReader.new.download( 'https://armada.ryankingston.com/fleet/136865/' )
-
-  @ships_images = dr.ships_images
-
-  @name = dr.name
-  @total = dr.total
-
-  @squadron_ratio = dr.squadron_ratio
-  @squadrons_pics = dr.squadrons_pics
-
-  haml :print
+  PdfCreator.new.create_pdf params['url']
+  send_file '/tmp/fleet.pdf'
 end
