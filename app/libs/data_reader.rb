@@ -7,6 +7,7 @@ require 'fileutils'
 class DataReader
 
 	attr_reader :ships_images, :name, :total, :squadrons_pics, :squadron_ratio, :squadrons_total
+  attr_reader :assault, :defense, :navigation
 
 	def download( url )
 		# puts 'About to download'
@@ -20,6 +21,13 @@ class DataReader
 
 		process_ships
 		process_squadrons
+
+		@assault = @data['assault']['image']
+    download_pic @assault
+    @defense = @data['defense']['image']
+    download_pic @defense
+    @navigation = @data['navigation']['image']
+    download_pic @navigation
 
 		self
 	end
@@ -77,11 +85,11 @@ class DataReader
 
 			# pp data
 
-			# File.open('tmp/fleet.txt','w') do |f|
-			# 	PP.pp(@data,f)
-      #
-			# 	# pp @data
-			# end
+			File.open('/tmp/fleet.txt','w') do |f|
+				PP.pp(@data,f)
+
+				# pp @data
+			end
 		end
 	end
 

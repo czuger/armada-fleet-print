@@ -3,6 +3,7 @@ require_relative 'libs/data_reader'
 require_relative 'libs/print_squadrons'
 require_relative 'libs/footer'
 require_relative 'libs/print_ships'
+require_relative 'libs/print_objectives'
 
 # TODO : Count lines, to avoid half blank page.
 
@@ -28,7 +29,8 @@ class PdfCreator
 
       # move_up 600
 
-      print_squadrons(dr, pdf_doc, y_pos)
+      y_pos = print_squadrons(dr, pdf_doc, y_pos)
+      print_objectives(dr, pdf_doc, y_pos)
 
       footer(dr, pdf_doc)
     end
@@ -36,5 +38,5 @@ class PdfCreator
 end
 
 if __FILE__ == $0
-  PdfCreator.new.create_pdf 'https://armada.ryankingston.com/fleet/138888/'
+  PdfCreator.new.create_pdf 'https://armada.ryankingston.com/fleet/138627/'
 end

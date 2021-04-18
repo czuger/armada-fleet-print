@@ -34,6 +34,11 @@ def print_squadrons(dr, pdf_doc, y_pos)
         pdf_doc.start_new_page
       end
     end
-
   end
+
+  if x_pos >= 1
+    y_pos += 1
+  end
+
+  y_pos
 end
