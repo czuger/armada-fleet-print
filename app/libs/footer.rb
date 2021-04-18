@@ -10,7 +10,7 @@ def footer(dr, pdf_doc)
   }
   pdf_doc.number_pages page_string, page_options
 
-  name_string = "#{dr.name} (#{dr.squadrons_total}/#{dr.total})"
+  name_string = "#{dr.name} (#{dr.squadrons_total}/#{dr.total}) - http://armada-print.ieroe.com/"
   name_options = {
       at: [pdf_doc.bounds.left, 0],
       align: :left,
