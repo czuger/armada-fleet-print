@@ -74,7 +74,7 @@ ruby '2.7.2'
 # gem 'haml-rails'
 # gem 'bootstrap', '~> 4.3.1'
 
-gem 'nokogiri', '~> 1.11'
+gem 'nokogiri', '~> 1.12'
 gem 'sinatra', '~> 2.1'
 gem 'sinatra-contrib', '~> 2.1'
 gem 'haml', '~> 5.2'
