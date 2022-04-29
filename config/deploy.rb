@@ -5,9 +5,9 @@ set :application, 'armada_fleet_print'
 set :repo_url, 'git@github.com:czuger/armada-fleet-print.git'
 
 set :rbenv_type, :user # or :system, depends on your rbenv setup
-set :rbenv_ruby, '2.6.3'
+set :rbenv_ruby, '3.0.2'
 
-set :deploy_to, '/var/www/armada_fleet_print'
+set :deploy_to, '/home/webapp/ruby/armada_fleet_print'
 
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/pics'
 append :linked_files, 'config/database.yml', 'config/secrets.yml'
