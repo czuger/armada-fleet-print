@@ -81,9 +81,18 @@ gem 'haml', '~> 5.2'
 gem 'actionpack', '~> 6.1'
 gem 'prawn', '~> 2.4'
 gem 'thin', '~> 1.8'
-gem 'rerun'
 gem 'puma', '~> 5.6'
-gem 'capistrano3-puma', '~> 5.2'
-gem 'capistrano', '~> 3.17'
 gem 'standalone_migrations'
-gem 'rake'
+gem 'rake', '~> 12.2'
+gem 'sqlite3', '~> 1.4'
+
+group :development do
+  gem 'capistrano', '~> 3.10', require: false
+  gem 'capistrano-rails', '~> 1.3', require: false
+  gem 'capistrano-bundler', '~> 2.0'
+  gem 'capistrano-rbenv', '~> 2.2'
+  gem 'capistrano3-puma', '~> 5.2'
+
+  gem 'ed25519', '~> 1.2'
+  gem 'bcrypt_pbkdf', '~> 1.0'
+end
