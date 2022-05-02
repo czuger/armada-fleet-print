@@ -1,9 +1,11 @@
 # config valid for current version and patch releases of Capistrano
-lock '~> 3.11.0'
+lock '~> 3.17.0'
 
 set :application, 'armada_fleet_print'
 set :repo_url, 'git@github.com:czuger/armada-fleet-print.git'
 
+set :rbenv_ruby, File.read('.ruby-version').strip
+set :rbenv_prefix, '/usr/bin/rbenv exec'
 set :rbenv_type, :user # or :system, depends on your rbenv setup
 set :rbenv_ruby, '3.0.2'
 
