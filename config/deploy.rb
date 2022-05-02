@@ -12,7 +12,17 @@ set :rbenv_ruby, '3.0.2'
 set :deploy_to, '/home/webapp/ruby/armada_fleet_print'
 
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/pics'
-append :linked_files, 'db/config.yml', 'config/secrets.yml'
+append :linked_files, 'db/config.yml', 'config/secrets.yml', 'config/settings.json'
+
+task :restart_bot do
+  on roles :all do
+    supervisor_command_name = fetch(:supervisor_command_name)
+
+    execute "supervisorctl restart #{supervisor_command_name}"
+  end
+end
+
+after 'deploy:finished', :restart_bot
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp

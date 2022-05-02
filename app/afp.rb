@@ -2,7 +2,7 @@
 require 'sinatra'
 require_relative 'pdf_creator'
 
-settings = File.read('settings.json')
+settings = File.read('config/settings.json')
 settings = JSON.parse(settings)
 
 set :port, settings['port']
