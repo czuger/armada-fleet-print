@@ -1,0 +1,15 @@
+default: &default
+  adapter: sqlite3
+  encoding: unicode
+
+development:
+  <<: *default
+  database: db/dev.sqlite3
+
+test:
+  <<: *default
+  database: db/test.sqlite3
+
+production:
+  <<: *default
+  database: db/production.sqlite3

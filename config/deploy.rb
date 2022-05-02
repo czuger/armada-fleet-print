@@ -12,7 +12,7 @@ set :rbenv_ruby, '3.0.2'
 set :deploy_to, '/home/webapp/ruby/armada_fleet_print'
 
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/pics'
-append :linked_files, 'config/database.yml', 'config/secrets.yml'
+append :linked_files, 'db/config.yml', 'config/secrets.yml'
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
@@ -31,7 +31,7 @@ append :linked_files, 'config/database.yml', 'config/secrets.yml'
 # set :pty, true
 
 # Default value for :linked_files is []
-# append :linked_files, "config/database.yml"
+# append :linked_files, "config/config.yml"
 
 # Default value for linked_dirs is []
 # append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
