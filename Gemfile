@@ -83,6 +83,7 @@ gem 'prawn', '~> 2.4'
 gem 'standalone_migrations'
 gem 'rake', '~> 12.2'
 gem 'sqlite3', '~> 1.4'
+gem 'webrick', '~> 1.7'
 
 group :development do
   gem 'capistrano', '~> 3.10', require: false
