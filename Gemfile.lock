@@ -88,12 +88,13 @@ GEM
     zeitwerk (2.5.4)
 
 PLATFORMS
+  x86_64-darwin-19
   x86_64-darwin-20
 
 DEPENDENCIES
   actionpack (~> 6.1)
   haml (~> 5.2)
-  nokogiri (~> 1.11)
+  nokogiri (~> 1.13.4)
   prawn (~> 2.4)
   rerun
   sinatra (~> 2.1)
