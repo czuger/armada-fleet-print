@@ -80,8 +80,6 @@ gem 'sinatra-contrib', '~> 2.1'
 gem 'haml', '~> 5.2'
 gem 'actionpack', '~> 6.1'
 gem 'prawn', '~> 2.4'
-gem 'thin', '~> 1.8'
-gem 'puma', '~> 5.6'
 gem 'standalone_migrations'
 gem 'rake', '~> 12.2'
 gem 'sqlite3', '~> 1.4'
@@ -91,7 +89,6 @@ group :development do
   gem 'capistrano-rails', '~> 1.3', require: false
   gem 'capistrano-bundler', '~> 2.0'
   gem 'capistrano-rbenv', '~> 2.2'
-  gem 'capistrano3-puma', '~> 5.2'
 
   gem 'ed25519', '~> 1.2'
   gem 'bcrypt_pbkdf', '~> 1.0'
