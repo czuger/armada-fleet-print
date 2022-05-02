@@ -10,6 +10,8 @@
 server 'pw', roles: %w{app web db}
 set :keep_releases, 1
 
+set :supervisor_command_name, 'armada'
+
 # role-based syntax
 # ==================
 
