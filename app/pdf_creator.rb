@@ -30,6 +30,12 @@ class PdfCreator
       # move_up 600
 
       y_pos = print_squadrons(dr, pdf_doc, y_pos)
+      print(y_pos)
+
+      if y_pos >= 2
+        y_pos = 0
+        pdf_doc.start_new_page
+      end
       print_objectives(dr, pdf_doc, y_pos)
 
       footer(dr, pdf_doc)
@@ -38,5 +44,6 @@ class PdfCreator
 end
 
 if __FILE__ == $0
-  PdfCreator.new.create_pdf 'https://armada.ryankingston.com/fleet/138627/'
+  # PdfCreator.new.create_pdf 'https://armada.ryankingston.com/fleet/207536/'
+  PdfCreator.new.create_pdf 'https://armada.ryankingston.com/fleet/158694/'
 end
