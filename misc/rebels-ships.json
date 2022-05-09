@@ -1,0 +1,117 @@
+{
+  "Assault Frigate Mk2 A": {
+    "name": "Assault Frigate Mk2 A",
+    "image": "assault-frigate-mark-ii-a.png",
+    "points": 81
+  },
+  "Assault Frigate Mk2 B": {
+    "name": "Assault Frigate Mk2 B",
+    "image": "assault-frigate-mark-ii-b.png",
+    "points": 72
+  },
+  "CR90 Corvette A": {
+    "name": "CR90 Corvette A",
+    "image": "cr90-corvette-a.png",
+    "points": 44
+  },
+  "CR90 Corvette B": {
+    "name": "CR90 Corvette B",
+    "image": "cr90-corvette-b.png",
+    "points": 39
+  },
+  "GR-75 Combat Retrofits": {
+    "name": "GR-75 Combat Retrofits",
+    "image": "swm19-gr-75-combat-retrofits.png",
+    "points": 24
+  },
+  "GR-75 Medium Transports": {
+    "name": "GR-75 Medium Transports",
+    "image": "swm19-gr-75-medium-transports.png",
+    "points": 18
+  },
+  "Hammerhead Scout Corvette": {
+    "name": "Hammerhead Scout Corvette",
+    "image": "swm27-hammerhead-scout-corvette.png",
+    "points": 41
+  },
+  "Hammerhead Torpedo Corvette": {
+    "name": "Hammerhead Torpedo Corvette",
+    "image": "swm27-hammerhead-torpedo-corvette.png",
+    "points": 36
+  },
+  "MC30c Scout Frigate": {
+    "name": "MC30c Scout Frigate",
+    "image": "mc30c-scout-frigate.png",
+    "points": 69
+  },
+  "MC30c Torpedo Frigate": {
+    "name": "MC30c Torpedo Frigate",
+    "image": "mc30c-torpedo-frigate.png",
+    "points": 63
+  },
+  "MC75 Armored Cruiser": {
+    "name": "MC75 Armored Cruiser",
+    "image": "mc75-armored-cruiser.png",
+    "points": 104
+  },
+  "MC75 Ordnance Cruiser": {
+    "name": "MC75 Ordnance Cruiser",
+    "image": "mc75-ordnance-cruiser.png",
+    "points": 100
+  },
+  "MC80 Assault Cruiser": {
+    "name": "MC80 Assault Cruiser",
+    "image": "mc80-assault-cruiser.png",
+    "points": 114
+  },
+  "MC80 Command Cruiser": {
+    "name": "MC80 Command Cruiser",
+    "image": "mc80-command-cruiser.png",
+    "points": 106
+  },
+  "MC80 Battle Cruiser": {
+    "name": "MC80 Battle Cruiser",
+    "image": "swm17-mc80-battle-cruiser.png",
+    "points": 103
+  },
+  "MC80 Star Cruiser": {
+    "name": "MC80 Star Cruiser",
+    "image": "swm17-mc80-star-cruiser.png",
+    "points": 96
+  },
+  "Nebulon-B Escort Frigate": {
+    "name": "Nebulon-B Escort Frigate",
+    "image": "nebulon-b-escort-frigate.png",
+    "points": 57
+  },
+  "Nebulon-B Support Refit": {
+    "name": "Nebulon-B Support Refit",
+    "image": "nebulon-b-support-refit.png",
+    "points": 51
+  },
+  "Pelta Assault Ship": {
+    "name": "Pelta Assault Ship",
+    "image": "pelta-class-assault-ship.png",
+    "points": 56
+  },
+  "Pelta Command Ship": {
+    "name": "Pelta Command Ship",
+    "image": "pelta-class-command-ship.png",
+    "points": 60
+  },
+  "Starhawk Battleship Mark I": {
+    "name": "Starhawk Battleship Mark I",
+    "image": "starhawk-class-battleship-mark-1.jpg",
+    "points": 140
+  },
+  "Starhawk Battleship Mark II": {
+    "name": "Starhawk Battleship Mark II",
+    "image": "starhawk-class-battleship-mark-2.jpg",
+    "points": 150
+  },
+  "Providence Carrier": {
+    "name": "Providence Carrier",
+    "image": "providence-carrier-b.jpg",
+    "points": 95
+  }
+}

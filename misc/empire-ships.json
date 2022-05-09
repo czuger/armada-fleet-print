@@ -1,0 +1,127 @@
+{
+  "Arquitens Command Cruiser": {
+    "name": "Arquitens Command Cruiser",
+    "image": "arquitens-class-command-cruiser.png",
+    "points": 59
+  },
+  "Arquitens Light Cruiser": {
+    "name": "Arquitens Light Cruiser",
+    "image": "arquitens-class-light-cruiser.png",
+    "points": 54
+  },
+  "Gladiator I": {
+    "name": "Gladiator I",
+    "image": "gladiator-i.png",
+    "points": 56
+  },
+  "Gladiator II": {
+    "name": "Gladiator II",
+    "image": "gladiator-ii.png",
+    "points": 62
+  },
+  "Gozanti Assault Carriers": {
+    "name": "Gozanti Assault Carriers",
+    "image": "swm18-gozanti-class-assault-carriers.png",
+    "points": 28
+  },
+  "Gozanti Cruisers": {
+    "name": "Gozanti Cruisers",
+    "image": "swm18-gozanti-class-cruisers.png",
+    "points": 23
+  },
+  "Imperial I": {
+    "name": "Imperial I",
+    "image": "imperial-i-class-star-destroyer.png",
+    "points": 110
+  },
+  "Imperial II": {
+    "name": "Imperial II",
+    "image": "imperial-ii-class-star-destroyer.png",
+    "points": 120
+  },
+  "ISD Cymoon 1 Refit": {
+    "name": "ISD Cymoon 1 Refit",
+    "image": "isd-cymoon-1-refit.png",
+    "points": 112
+  },
+  "ISD Kuat Refit": {
+    "name": "ISD Kuat Refit",
+    "image": "isd-kuat-refit.png",
+    "points": 112
+  },
+  "Interdictor Combat Refit": {
+    "name": "Interdictor Combat Refit",
+    "image": "swm14-interdictor-combat-refit.png",
+    "points": 93
+  },
+  "Interdictor Suppression Refit": {
+    "name": "Interdictor Suppression Refit",
+    "image": "swm16-interdictor-suppression-refit.png",
+    "points": 90
+  },
+  "Onager Star Destroyer": {
+    "name": "Onager Star Destroyer",
+    "image": "onager-class-star-destroyer.jpg",
+    "points": 110
+  },
+  "Onager Testbed": {
+    "name": "Onager Testbed",
+    "image": "onager-class-testbed.jpg",
+    "points": 96
+  },
+  "Quasar Fire I": {
+    "name": "Quasar Fire I",
+    "image": "swm26-quasar-fire-i-class-cruiser-carrier.png",
+    "points": 54
+  },
+  "Quasar Fire II": {
+    "name": "Quasar Fire II",
+    "image": "swm26-quasar-fire-ii-class-cruiser-carrier.png",
+    "points": 61
+  },
+  "Raider I": {
+    "name": "Raider I",
+    "image": "raider-i-class-corvette.png",
+    "points": 44
+  },
+  "Raider II": {
+    "name": "Raider II",
+    "image": "raider-ii-class-corvette.png",
+    "points": 48
+  },
+  "Victory I": {
+    "name": "Victory I",
+    "image": "victory-i.png",
+    "points": 73
+  },
+  "Victory II": {
+    "name": "Victory II",
+    "image": "victory-ii.png",
+    "points": 85
+  },
+  "Venator II": {
+    "name": "Venator II",
+    "image": "venator-2b.jpg",
+    "points": 100
+  },
+  "SSD Command Prototype": {
+    "name": "SSD Command Prototype",
+    "image": "ssd-command-prototype.png",
+    "points": 220
+  },
+  "SSD Assault Prototype": {
+    "name": "SSD Assault Prototype",
+    "image": "ssd-assault-prototype.png",
+    "points": 250
+  },
+  "SSD Executor I": {
+    "name": "SSD Executor I",
+    "image": "ssd-executor-1.png",
+    "points": 381
+  },
+  "SSD Executor II": {
+    "name": "SSD Executor II",
+    "image": "ssd-executor-2.png",
+    "points": 411
+  }
+}

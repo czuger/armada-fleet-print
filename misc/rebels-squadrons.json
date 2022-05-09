@@ -1,0 +1,192 @@
+{
+  "Biggs Darklighter": {
+    "name": "Biggs Darklighter",
+    "image": "biggs-darklighter.png",
+    "points": 19
+  },
+  "Corran Horn": {
+    "name": "Corran Horn",
+    "image": "corran-horn.png",
+    "points": 22
+  },
+  "Dagger Squadron": {
+    "name": "Dagger Squadron",
+    "image": "dagger-squadron.png",
+    "points": 15
+  },
+  "Dash Rendar": {
+    "name": "Dash Rendar",
+    "image": "dash-rendar.png",
+    "points": 24
+  },
+  "Dutch Vander": {
+    "name": "Dutch Vander",
+    "image": "dutchvander.png",
+    "points": 16
+  },
+  "Gold Squadron": {
+    "name": "Gold Squadron",
+    "image": "gold-squadron.png",
+    "points": 12
+  },
+  "Green Squadron": {
+    "name": "Green Squadron",
+    "image": "green-squadron.png",
+    "points": 12
+  },
+  "Han Solo": {
+    "name": "Han Solo",
+    "image": "han-solo.png",
+    "points": 26
+  },
+  "Hera Syndulla (Ghost)": {
+    "name": "Hera Syndulla (Ghost)",
+    "image": "hera-syndulla.png",
+    "points": 28
+  },
+  "Hera Syndulla (X-wing)": {
+    "name": "Hera Syndulla (X-wing)",
+    "image": "hera-syndulla-xwing.jpg",
+    "points": 23
+  },
+  "Jan Ors": {
+    "name": "Jan Ors",
+    "image": "jan-ors.png",
+    "points": 19
+  },
+  "Kanan Jarrus": {
+    "name": "Kanan Jarrus",
+    "image": "kanan-jarrus.jpg",
+    "points": 19
+  },
+  "Ketsu Onyo": {
+    "name": "Ketsu Onyo",
+    "image": "ketsu-onyo.png",
+    "points": 22
+  },
+  "Keyan Farlander": {
+    "name": "Keyan Farlander",
+    "image": "keyanfarlander.png",
+    "points": 20
+  },
+  "Lando Calrissian": {
+    "name": "Lando Calrissian",
+    "image": "lando-calrissian-squad.png",
+    "points": 23
+  },
+  "Lieutenant Blount": {
+    "name": "Lieutenant Blount",
+    "image": "lieutenant-blount.png",
+    "points": 14
+  },
+  "Luke Skywalker": {
+    "name": "Luke Skywalker",
+    "image": "luke-skywalker.png",
+    "points": 20
+  },
+  "Malee Hurra": {
+    "name": "Malee Hurra",
+    "image": "malee-hurra.jpg",
+    "points": 26
+  },
+  "Mart Mattin": {
+    "name": "Mart Mattin",
+    "image": "mart-mattin.jpg",
+    "points": 22
+  },
+  "Norra Wexley": {
+    "name": "Norra Wexley",
+    "image": "norra-wexley.png",
+    "points": 17
+  },
+  "Nym": {
+    "name": "Nym",
+    "image": "nym.png",
+    "points": 21
+  },
+  "Rogue Squadron": {
+    "name": "Rogue Squadron",
+    "image": "rogue-squadron.png",
+    "points": 14
+  },
+  "Shara Bey": {
+    "name": "Shara Bey",
+    "image": "shara-bey.png",
+    "points": 17
+  },
+  "Ten Numb": {
+    "name": "Ten Numb",
+    "image": "ten-numb.png",
+    "points": 19
+  },
+  "Tycho Celchu": {
+    "name": "Tycho Celchu",
+    "image": "tycho.png",
+    "points": 16
+  },
+  "Wedge Antilles": {
+    "name": "Wedge Antilles",
+    "image": "wedgeantilles.png",
+    "points": 19
+  },
+  "A-wing Squadron": {
+    "name": "A-wing Squadron",
+    "image": "awingsquadron.png",
+    "points": 11
+  },
+  "B-wing Squadron": {
+    "name": "B-wing Squadron",
+    "image": "bwingsquadron.png",
+    "points": 14
+  },
+  "E-wing Squadron": {
+    "name": "E-wing Squadron",
+    "image": "e-wing-squadron.png",
+    "points": 15
+  },
+  "HWK-290": {
+    "name": "HWK-290",
+    "image": "hwk-290.png",
+    "points": 12
+  },
+  "Lancer Pursuit Craft": {
+    "name": "Lancer Pursuit Craft",
+    "image": "lancer-class-pursuit-craft.png",
+    "points": 15
+  },
+  "Scurrg H-6 Bomber": {
+    "name": "Scurrg H-6 Bomber",
+    "image": "scurrg-h6.png",
+    "points": 16
+  },
+  "VCX-100 Freighter": {
+    "name": "VCX-100 Freighter",
+    "image": "vcx-100-freighter.png",
+    "points": 15
+  },
+  "X-wing Squadron": {
+    "name": "X-wing Squadron",
+    "image": "xwing-squadron.png",
+    "points": 13
+  },
+  "Y-wing Squadron": {
+    "name": "Y-wing Squadron",
+    "image": "ywingsquadron.png",
+    "points": 10
+  },
+  "YT-1300": {
+    "name": "YT-1300",
+    "image": "yt-1300.png",
+    "points": 13
+  },
+  "YT-2400": {
+    "name": "YT-2400",
+    "image": "yt-2400.png",
+    "points": 16
+  },
+  "Z-95 Headhunter Squadron": {
+    "name": "Z-95 Headhunter Squadron",
+    "image": "z-95-headhunter-squadron.png",
+    "points": 7
+  }
+}
