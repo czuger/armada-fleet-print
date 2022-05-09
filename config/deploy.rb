@@ -11,7 +11,7 @@ set :rbenv_ruby, '3.0.2'
 
 set :deploy_to, '/home/webapp/ruby/armada_fleet_print'
 
-append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/pics'
+append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'pics'
 append :linked_files, 'db/config.yml', 'config/secrets.yml', 'config/settings.json'
 
 task :restart_bot do
