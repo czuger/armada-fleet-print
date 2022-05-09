@@ -90,7 +90,9 @@ class DataReader
 
 				# pp @data
 			end
-		end
+
+      File.write('/tmp/fleet.json', JSON.pretty_generate(@data))
+    end
 	end
 
 	# Download picture if not already downloaded

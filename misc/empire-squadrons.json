@@ -1,0 +1,202 @@
+{
+  "Black Squadron": {
+    "name": "Black Squadron",
+    "image": "black-squadron.png",
+    "points": 9
+  },
+  "Boba Fett": {
+    "name": "Boba Fett",
+    "image": "bobafett.png",
+    "points": 26
+  },
+  "Bossk": {
+    "name": "Bossk",
+    "image": "bossk.png",
+    "points": 23
+  },
+  "Captain Jonus": {
+    "name": "Captain Jonus",
+    "image": "captain-jonus.png",
+    "points": 16
+  },
+  "Ciena Ree": {
+    "name": "Ciena Ree",
+    "image": "ciena-ree.png",
+    "points": 17
+  },
+  "Colonel Jendon": {
+    "name": "Colonel Jendon",
+    "image": "colonel-jendon.png",
+    "points": 20
+  },
+  "Darth Vader (TIE Advanced)": {
+    "name": "Darth Vader (TIE Advanced)",
+    "image": "darth-vader.png",
+    "points": 21
+  },
+  "Darth Vader (TIE Defender)": {
+    "name": "Darth Vader (TIE Defender)",
+    "image": "darth-vader-defender.jpg",
+    "points": 25
+  },
+  "Dengar": {
+    "name": "Dengar",
+    "image": "dengar.png",
+    "points": 20
+  },
+  "Gamma Squadron": {
+    "name": "Gamma Squadron",
+    "image": "gamma-squadron.png",
+    "points": 10
+  },
+  "Gar Saxon": {
+    "name": "Gar Saxon",
+    "image": "gar-saxon.png",
+    "points": 23
+  },
+  "Hondo Ohnaka": {
+    "name": "Hondo Ohnaka",
+    "image": "hondo-ohnaka-squad.jpg",
+    "points": 24
+  },
+  "Howlrunner": {
+    "name": "Howlrunner",
+    "image": "howlrunner.png",
+    "points": 16
+  },
+  "IG-88": {
+    "name": "IG-88",
+    "image": "ig88.png",
+    "points": 21
+  },
+  "IG-88B": {
+    "name": "IG-88B",
+    "image": "ig-88b.png",
+    "points": 21
+  },
+  "Maarek Stele": {
+    "name": "Maarek Stele",
+    "image": "maarek-stele.png",
+    "points": 21
+  },
+  "Major Rhymer": {
+    "name": "Major Rhymer",
+    "image": "major-rhymer.png",
+    "points": 16
+  },
+  "Mauler Mithel": {
+    "name": "Mauler Mithel",
+    "image": "mauler-mithel.png",
+    "points": 15
+  },
+  "Moralo Eval": {
+    "name": "Moralo Eval",
+    "image": "moralo-eval.jpg",
+    "points": 22
+  },
+  "Morna Kee": {
+    "name": "Morna Kee",
+    "image": "morna-kee.png",
+    "points": 27
+  },
+  "Saber Squadron": {
+    "name": "Saber Squadron",
+    "image": "saber-squadron.png",
+    "points": 12
+  },
+  "Soontir Fel": {
+    "name": "Soontir Fel",
+    "image": "soontir-fel.png",
+    "points": 18
+  },
+  "Tel Trevura": {
+    "name": "Tel Trevura",
+    "image": "tel-trevura.jpg",
+    "points": 17
+  },
+  "Tempest Squadron": {
+    "name": "Tempest Squadron",
+    "image": "tempest-squadron.png",
+    "points": 13
+  },
+  "Valen Rudor": {
+    "name": "Valen Rudor",
+    "image": "valen-rudor.png",
+    "points": 13
+  },
+  "Whisper": {
+    "name": "Whisper",
+    "image": "whisper.png",
+    "points": 20
+  },
+  "Zertik Strom": {
+    "name": "Zertik Strom",
+    "image": "zertik-strom.png",
+    "points": 15
+  },
+  "Aggressor Assault Fighter": {
+    "name": "Aggressor Assault Fighter",
+    "image": "aggressor.png",
+    "points": 16
+  },
+  "Firespray-31": {
+    "name": "Firespray-31",
+    "image": "firespray.png",
+    "points": 18
+  },
+  "JumpMaster 5000": {
+    "name": "JumpMaster 5000",
+    "image": "jumpmaster-5000.png",
+    "points": 12
+  },
+  "Lambda Shuttle": {
+    "name": "Lambda Shuttle",
+    "image": "lambda-class-shuttle.png",
+    "points": 15
+  },
+  "Mandalorian Gauntlet Fighter": {
+    "name": "Mandalorian Gauntlet Fighter",
+    "image": "mandalorian-gauntlet-fighter.png",
+    "points": 20
+  },
+  "TIE Advanced Squadron": {
+    "name": "TIE Advanced Squadron",
+    "image": "tie-advanced-squadron.png",
+    "points": 12
+  },
+  "TIE Bomber Squadron": {
+    "name": "TIE Bomber Squadron",
+    "image": "tie-bomber-squadron.png",
+    "points": 9
+  },
+  "TIE Defender Squadron": {
+    "name": "TIE Defender Squadron",
+    "image": "tie-defender-squadron.png",
+    "points": 16
+  },
+  "TIE Fighter Squadron": {
+    "name": "TIE Fighter Squadron",
+    "image": "tie-fighter-squadron.png",
+    "points": 8
+  },
+  "TIE Interceptor Squadron": {
+    "name": "TIE Interceptor Squadron",
+    "image": "tie-interceptor-squadron.png",
+    "points": 11
+  },
+  "TIE Phantom Squadron": {
+    "name": "TIE Phantom Squadron",
+    "image": "tie-phantom-squadron.png",
+    "points": 14
+  },
+  "VT-49 Decimator": {
+    "name": "VT-49 Decimator",
+    "image": "vt-49-decimator.png",
+    "points": 22
+  },
+  "YV-666": {
+    "name": "YV-666",
+    "image": "yv-666.png",
+    "points": 15
+  }
+}
