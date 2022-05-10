@@ -1,0 +1,25 @@
+Arquitens Command Cruiser
+Arquitens Light Cruiser
+Gladiator I
+Gladiator II
+Gozanti Assault Carriers
+Gozanti Cruisers
+Imperial I
+Imperial II
+ISD Cymoon 1 Refit
+ISD Kuat Refit
+Interdictor Combat Refit
+Interdictor Suppression Refit
+Onager Star Destroyer
+Onager Testbed
+Quasar Fire I
+Quasar Fire II
+Raider I
+Raider II
+Victory I
+Victory II
+Venator II
+SSD Command Prototype
+SSD Assault Prototype
+SSD Executor I
+SSD Executor II

@@ -1,0 +1,23 @@
+Assault Frigate Mk2 A
+Assault Frigate Mk2 B
+CR90 Corvette A
+CR90 Corvette B
+GR-75 Combat Retrofits
+GR-75 Medium Transports
+Hammerhead Scout Corvette
+Hammerhead Torpedo Corvette
+MC30c Scout Frigate
+MC30c Torpedo Frigate
+MC75 Armored Cruiser
+MC75 Ordnance Cruiser
+MC80 Assault Cruiser
+MC80 Command Cruiser
+MC80 Battle Cruiser
+MC80 Star Cruiser
+Nebulon-B Escort Frigate
+Nebulon-B Support Refit
+Pelta Assault Ship
+Pelta Command Ship
+Starhawk Battleship Mark I
+Starhawk Battleship Mark II
+Providence Carrier

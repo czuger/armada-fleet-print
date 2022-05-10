@@ -22,6 +22,8 @@ class DataReader
 		process_ships
 		process_squadrons
 
+		# TODO : need to protect if no objectivs, same for squadrons and fleets.
+
 		@assault = @data['assault']['image']
     download_pic @assault
     @defense = @data['defense']['image']

@@ -1,0 +1,636 @@
+{
+  "rebels": {
+    "Assault Frigate Mk2 A": {
+      "name": "Assault Frigate Mk2 A",
+      "image": "assault-frigate-mark-ii-a.png",
+      "points": 81
+    },
+    "Assault Frigate Mk2 B": {
+      "name": "Assault Frigate Mk2 B",
+      "image": "assault-frigate-mark-ii-b.png",
+      "points": 72
+    },
+    "CR90 Corvette A": {
+      "name": "CR90 Corvette A",
+      "image": "cr90-corvette-a.png",
+      "points": 44
+    },
+    "CR90 Corvette B": {
+      "name": "CR90 Corvette B",
+      "image": "cr90-corvette-b.png",
+      "points": 39
+    },
+    "GR-75 Combat Retrofits": {
+      "name": "GR-75 Combat Retrofits",
+      "image": "swm19-gr-75-combat-retrofits.png",
+      "points": 24
+    },
+    "GR-75 Medium Transports": {
+      "name": "GR-75 Medium Transports",
+      "image": "swm19-gr-75-medium-transports.png",
+      "points": 18
+    },
+    "Hammerhead Scout Corvette": {
+      "name": "Hammerhead Scout Corvette",
+      "image": "swm27-hammerhead-scout-corvette.png",
+      "points": 41
+    },
+    "Hammerhead Torpedo Corvette": {
+      "name": "Hammerhead Torpedo Corvette",
+      "image": "swm27-hammerhead-torpedo-corvette.png",
+      "points": 36
+    },
+    "MC30c Scout Frigate": {
+      "name": "MC30c Scout Frigate",
+      "image": "mc30c-scout-frigate.png",
+      "points": 69
+    },
+    "MC30c Torpedo Frigate": {
+      "name": "MC30c Torpedo Frigate",
+      "image": "mc30c-torpedo-frigate.png",
+      "points": 63
+    },
+    "MC75 Armored Cruiser": {
+      "name": "MC75 Armored Cruiser",
+      "image": "mc75-armored-cruiser.png",
+      "points": 104
+    },
+    "MC75 Ordnance Cruiser": {
+      "name": "MC75 Ordnance Cruiser",
+      "image": "mc75-ordnance-cruiser.png",
+      "points": 100
+    },
+    "MC80 Assault Cruiser": {
+      "name": "MC80 Assault Cruiser",
+      "image": "mc80-assault-cruiser.png",
+      "points": 114
+    },
+    "MC80 Command Cruiser": {
+      "name": "MC80 Command Cruiser",
+      "image": "mc80-command-cruiser.png",
+      "points": 106
+    },
+    "MC80 Battle Cruiser": {
+      "name": "MC80 Battle Cruiser",
+      "image": "swm17-mc80-battle-cruiser.png",
+      "points": 103
+    },
+    "MC80 Star Cruiser": {
+      "name": "MC80 Star Cruiser",
+      "image": "swm17-mc80-star-cruiser.png",
+      "points": 96
+    },
+    "Nebulon-B Escort Frigate": {
+      "name": "Nebulon-B Escort Frigate",
+      "image": "nebulon-b-escort-frigate.png",
+      "points": 57
+    },
+    "Nebulon-B Support Refit": {
+      "name": "Nebulon-B Support Refit",
+      "image": "nebulon-b-support-refit.png",
+      "points": 51
+    },
+    "Pelta Assault Ship": {
+      "name": "Pelta Assault Ship",
+      "image": "pelta-class-assault-ship.png",
+      "points": 56
+    },
+    "Pelta Command Ship": {
+      "name": "Pelta Command Ship",
+      "image": "pelta-class-command-ship.png",
+      "points": 60
+    },
+    "Starhawk Battleship Mark I": {
+      "name": "Starhawk Battleship Mark I",
+      "image": "starhawk-class-battleship-mark-1.jpg",
+      "points": 140
+    },
+    "Starhawk Battleship Mark II": {
+      "name": "Starhawk Battleship Mark II",
+      "image": "starhawk-class-battleship-mark-2.jpg",
+      "points": 150
+    },
+    "Providence Carrier": {
+      "name": "Providence Carrier",
+      "image": "providence-carrier-b.jpg",
+      "points": 95
+    },
+    "Biggs Darklighter": {
+      "name": "Biggs Darklighter",
+      "image": "biggs-darklighter.png",
+      "points": 19
+    },
+    "Corran Horn": {
+      "name": "Corran Horn",
+      "image": "corran-horn.png",
+      "points": 22
+    },
+    "Dagger Squadron": {
+      "name": "Dagger Squadron",
+      "image": "dagger-squadron.png",
+      "points": 15
+    },
+    "Dash Rendar": {
+      "name": "Dash Rendar",
+      "image": "dash-rendar.png",
+      "points": 24
+    },
+    "Dutch Vander": {
+      "name": "Dutch Vander",
+      "image": "dutchvander.png",
+      "points": 16
+    },
+    "Gold Squadron": {
+      "name": "Gold Squadron",
+      "image": "gold-squadron.png",
+      "points": 12
+    },
+    "Green Squadron": {
+      "name": "Green Squadron",
+      "image": "green-squadron.png",
+      "points": 12
+    },
+    "Han Solo": {
+      "name": "Han Solo",
+      "image": "han-solo.png",
+      "points": 26
+    },
+    "Hera Syndulla (Ghost)": {
+      "name": "Hera Syndulla (Ghost)",
+      "image": "hera-syndulla.png",
+      "points": 28
+    },
+    "Hera Syndulla (X-wing)": {
+      "name": "Hera Syndulla (X-wing)",
+      "image": "hera-syndulla-xwing.jpg",
+      "points": 23
+    },
+    "Jan Ors": {
+      "name": "Jan Ors",
+      "image": "jan-ors.png",
+      "points": 19
+    },
+    "Kanan Jarrus": {
+      "name": "Kanan Jarrus",
+      "image": "kanan-jarrus.jpg",
+      "points": 19
+    },
+    "Ketsu Onyo": {
+      "name": "Ketsu Onyo",
+      "image": "ketsu-onyo.png",
+      "points": 22
+    },
+    "Keyan Farlander": {
+      "name": "Keyan Farlander",
+      "image": "keyanfarlander.png",
+      "points": 20
+    },
+    "Lando Calrissian": {
+      "name": "Lando Calrissian",
+      "image": "lando-calrissian-squad.png",
+      "points": 23
+    },
+    "Lieutenant Blount": {
+      "name": "Lieutenant Blount",
+      "image": "lieutenant-blount.png",
+      "points": 14
+    },
+    "Luke Skywalker": {
+      "name": "Luke Skywalker",
+      "image": "luke-skywalker.png",
+      "points": 20
+    },
+    "Malee Hurra": {
+      "name": "Malee Hurra",
+      "image": "malee-hurra.jpg",
+      "points": 26
+    },
+    "Mart Mattin": {
+      "name": "Mart Mattin",
+      "image": "mart-mattin.jpg",
+      "points": 22
+    },
+    "Norra Wexley": {
+      "name": "Norra Wexley",
+      "image": "norra-wexley.png",
+      "points": 17
+    },
+    "Nym": {
+      "name": "Nym",
+      "image": "nym.png",
+      "points": 21
+    },
+    "Rogue Squadron": {
+      "name": "Rogue Squadron",
+      "image": "rogue-squadron.png",
+      "points": 14
+    },
+    "Shara Bey": {
+      "name": "Shara Bey",
+      "image": "shara-bey.png",
+      "points": 17
+    },
+    "Ten Numb": {
+      "name": "Ten Numb",
+      "image": "ten-numb.png",
+      "points": 19
+    },
+    "Tycho Celchu": {
+      "name": "Tycho Celchu",
+      "image": "tycho.png",
+      "points": 16
+    },
+    "Wedge Antilles": {
+      "name": "Wedge Antilles",
+      "image": "wedgeantilles.png",
+      "points": 19
+    },
+    "A-wing Squadron": {
+      "name": "A-wing Squadron",
+      "image": "awingsquadron.png",
+      "points": 11
+    },
+    "B-wing Squadron": {
+      "name": "B-wing Squadron",
+      "image": "bwingsquadron.png",
+      "points": 14
+    },
+    "E-wing Squadron": {
+      "name": "E-wing Squadron",
+      "image": "e-wing-squadron.png",
+      "points": 15
+    },
+    "HWK-290": {
+      "name": "HWK-290",
+      "image": "hwk-290.png",
+      "points": 12
+    },
+    "Lancer Pursuit Craft": {
+      "name": "Lancer Pursuit Craft",
+      "image": "lancer-class-pursuit-craft.png",
+      "points": 15
+    },
+    "Scurrg H-6 Bomber": {
+      "name": "Scurrg H-6 Bomber",
+      "image": "scurrg-h6.png",
+      "points": 16
+    },
+    "VCX-100 Freighter": {
+      "name": "VCX-100 Freighter",
+      "image": "vcx-100-freighter.png",
+      "points": 15
+    },
+    "X-wing Squadron": {
+      "name": "X-wing Squadron",
+      "image": "xwing-squadron.png",
+      "points": 13
+    },
+    "Y-wing Squadron": {
+      "name": "Y-wing Squadron",
+      "image": "ywingsquadron.png",
+      "points": 10
+    },
+    "YT-1300": {
+      "name": "YT-1300",
+      "image": "yt-1300.png",
+      "points": 13
+    },
+    "YT-2400": {
+      "name": "YT-2400",
+      "image": "yt-2400.png",
+      "points": 16
+    },
+    "Z-95 Headhunter Squadron": {
+      "name": "Z-95 Headhunter Squadron",
+      "image": "z-95-headhunter-squadron.png",
+      "points": 7
+    }
+  },
+  "empire": {
+    "Arquitens Command Cruiser": {
+      "name": "Arquitens Command Cruiser",
+      "image": "arquitens-class-command-cruiser.png",
+      "points": 59
+    },
+    "Arquitens Light Cruiser": {
+      "name": "Arquitens Light Cruiser",
+      "image": "arquitens-class-light-cruiser.png",
+      "points": 54
+    },
+    "Gladiator I": {
+      "name": "Gladiator I",
+      "image": "gladiator-i.png",
+      "points": 56
+    },
+    "Gladiator II": {
+      "name": "Gladiator II",
+      "image": "gladiator-ii.png",
+      "points": 62
+    },
+    "Gozanti Assault Carriers": {
+      "name": "Gozanti Assault Carriers",
+      "image": "swm18-gozanti-class-assault-carriers.png",
+      "points": 28
+    },
+    "Gozanti Cruisers": {
+      "name": "Gozanti Cruisers",
+      "image": "swm18-gozanti-class-cruisers.png",
+      "points": 23
+    },
+    "Imperial I": {
+      "name": "Imperial I",
+      "image": "imperial-i-class-star-destroyer.png",
+      "points": 110
+    },
+    "Imperial II": {
+      "name": "Imperial II",
+      "image": "imperial-ii-class-star-destroyer.png",
+      "points": 120
+    },
+    "ISD Cymoon 1 Refit": {
+      "name": "ISD Cymoon 1 Refit",
+      "image": "isd-cymoon-1-refit.png",
+      "points": 112
+    },
+    "ISD Kuat Refit": {
+      "name": "ISD Kuat Refit",
+      "image": "isd-kuat-refit.png",
+      "points": 112
+    },
+    "Interdictor Combat Refit": {
+      "name": "Interdictor Combat Refit",
+      "image": "swm14-interdictor-combat-refit.png",
+      "points": 93
+    },
+    "Interdictor Suppression Refit": {
+      "name": "Interdictor Suppression Refit",
+      "image": "swm16-interdictor-suppression-refit.png",
+      "points": 90
+    },
+    "Onager Star Destroyer": {
+      "name": "Onager Star Destroyer",
+      "image": "onager-class-star-destroyer.jpg",
+      "points": 110
+    },
+    "Onager Testbed": {
+      "name": "Onager Testbed",
+      "image": "onager-class-testbed.jpg",
+      "points": 96
+    },
+    "Quasar Fire I": {
+      "name": "Quasar Fire I",
+      "image": "swm26-quasar-fire-i-class-cruiser-carrier.png",
+      "points": 54
+    },
+    "Quasar Fire II": {
+      "name": "Quasar Fire II",
+      "image": "swm26-quasar-fire-ii-class-cruiser-carrier.png",
+      "points": 61
+    },
+    "Raider I": {
+      "name": "Raider I",
+      "image": "raider-i-class-corvette.png",
+      "points": 44
+    },
+    "Raider II": {
+      "name": "Raider II",
+      "image": "raider-ii-class-corvette.png",
+      "points": 48
+    },
+    "Victory I": {
+      "name": "Victory I",
+      "image": "victory-i.png",
+      "points": 73
+    },
+    "Victory II": {
+      "name": "Victory II",
+      "image": "victory-ii.png",
+      "points": 85
+    },
+    "Venator II": {
+      "name": "Venator II",
+      "image": "venator-2b.jpg",
+      "points": 100
+    },
+    "SSD Command Prototype": {
+      "name": "SSD Command Prototype",
+      "image": "ssd-command-prototype.png",
+      "points": 220
+    },
+    "SSD Assault Prototype": {
+      "name": "SSD Assault Prototype",
+      "image": "ssd-assault-prototype.png",
+      "points": 250
+    },
+    "SSD Executor I": {
+      "name": "SSD Executor I",
+      "image": "ssd-executor-1.png",
+      "points": 381
+    },
+    "SSD Executor II": {
+      "name": "SSD Executor II",
+      "image": "ssd-executor-2.png",
+      "points": 411
+    },
+    "Black Squadron": {
+      "name": "Black Squadron",
+      "image": "black-squadron.png",
+      "points": 9
+    },
+    "Boba Fett": {
+      "name": "Boba Fett",
+      "image": "bobafett.png",
+      "points": 26
+    },
+    "Bossk": {
+      "name": "Bossk",
+      "image": "bossk.png",
+      "points": 23
+    },
+    "Captain Jonus": {
+      "name": "Captain Jonus",
+      "image": "captain-jonus.png",
+      "points": 16
+    },
+    "Ciena Ree": {
+      "name": "Ciena Ree",
+      "image": "ciena-ree.png",
+      "points": 17
+    },
+    "Colonel Jendon": {
+      "name": "Colonel Jendon",
+      "image": "colonel-jendon.png",
+      "points": 20
+    },
+    "Darth Vader (TIE Advanced)": {
+      "name": "Darth Vader (TIE Advanced)",
+      "image": "darth-vader.png",
+      "points": 21
+    },
+    "Darth Vader (TIE Defender)": {
+      "name": "Darth Vader (TIE Defender)",
+      "image": "darth-vader-defender.jpg",
+      "points": 25
+    },
+    "Dengar": {
+      "name": "Dengar",
+      "image": "dengar.png",
+      "points": 20
+    },
+    "Gamma Squadron": {
+      "name": "Gamma Squadron",
+      "image": "gamma-squadron.png",
+      "points": 10
+    },
+    "Gar Saxon": {
+      "name": "Gar Saxon",
+      "image": "gar-saxon.png",
+      "points": 23
+    },
+    "Hondo Ohnaka": {
+      "name": "Hondo Ohnaka",
+      "image": "hondo-ohnaka-squad.jpg",
+      "points": 24
+    },
+    "Howlrunner": {
+      "name": "Howlrunner",
+      "image": "howlrunner.png",
+      "points": 16
+    },
+    "IG-88": {
+      "name": "IG-88",
+      "image": "ig88.png",
+      "points": 21
+    },
+    "IG-88B": {
+      "name": "IG-88B",
+      "image": "ig-88b.png",
+      "points": 21
+    },
+    "Maarek Stele": {
+      "name": "Maarek Stele",
+      "image": "maarek-stele.png",
+      "points": 21
+    },
+    "Major Rhymer": {
+      "name": "Major Rhymer",
+      "image": "major-rhymer.png",
+      "points": 16
+    },
+    "Mauler Mithel": {
+      "name": "Mauler Mithel",
+      "image": "mauler-mithel.png",
+      "points": 15
+    },
+    "Moralo Eval": {
+      "name": "Moralo Eval",
+      "image": "moralo-eval.jpg",
+      "points": 22
+    },
+    "Morna Kee": {
+      "name": "Morna Kee",
+      "image": "morna-kee.png",
+      "points": 27
+    },
+    "Saber Squadron": {
+      "name": "Saber Squadron",
+      "image": "saber-squadron.png",
+      "points": 12
+    },
+    "Soontir Fel": {
+      "name": "Soontir Fel",
+      "image": "soontir-fel.png",
+      "points": 18
+    },
+    "Tel Trevura": {
+      "name": "Tel Trevura",
+      "image": "tel-trevura.jpg",
+      "points": 17
+    },
+    "Tempest Squadron": {
+      "name": "Tempest Squadron",
+      "image": "tempest-squadron.png",
+      "points": 13
+    },
+    "Valen Rudor": {
+      "name": "Valen Rudor",
+      "image": "valen-rudor.png",
+      "points": 13
+    },
+    "Whisper": {
+      "name": "Whisper",
+      "image": "whisper.png",
+      "points": 20
+    },
+    "Zertik Strom": {
+      "name": "Zertik Strom",
+      "image": "zertik-strom.png",
+      "points": 15
+    },
+    "Aggressor Assault Fighter": {
+      "name": "Aggressor Assault Fighter",
+      "image": "aggressor.png",
+      "points": 16
+    },
+    "Firespray-31": {
+      "name": "Firespray-31",
+      "image": "firespray.png",
+      "points": 18
+    },
+    "JumpMaster 5000": {
+      "name": "JumpMaster 5000",
+      "image": "jumpmaster-5000.png",
+      "points": 12
+    },
+    "Lambda Shuttle": {
+      "name": "Lambda Shuttle",
+      "image": "lambda-class-shuttle.png",
+      "points": 15
+    },
+    "Mandalorian Gauntlet Fighter": {
+      "name": "Mandalorian Gauntlet Fighter",
+      "image": "mandalorian-gauntlet-fighter.png",
+      "points": 20
+    },
+    "TIE Advanced Squadron": {
+      "name": "TIE Advanced Squadron",
+      "image": "tie-advanced-squadron.png",
+      "points": 12
+    },
+    "TIE Bomber Squadron": {
+      "name": "TIE Bomber Squadron",
+      "image": "tie-bomber-squadron.png",
+      "points": 9
+    },
+    "TIE Defender Squadron": {
+      "name": "TIE Defender Squadron",
+      "image": "tie-defender-squadron.png",
+      "points": 16
+    },
+    "TIE Fighter Squadron": {
+      "name": "TIE Fighter Squadron",
+      "image": "tie-fighter-squadron.png",
+      "points": 8
+    },
+    "TIE Interceptor Squadron": {
+      "name": "TIE Interceptor Squadron",
+      "image": "tie-interceptor-squadron.png",
+      "points": 11
+    },
+    "TIE Phantom Squadron": {
+      "name": "TIE Phantom Squadron",
+      "image": "tie-phantom-squadron.png",
+      "points": 14
+    },
+    "VT-49 Decimator": {
+      "name": "VT-49 Decimator",
+      "image": "vt-49-decimator.png",
+      "points": 22
+    },
+    "YV-666": {
+      "name": "YV-666",
+      "image": "yv-666.png",
+      "points": 15
+    }
+  }
+}
