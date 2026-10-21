@@ -1,0 +1,29 @@
+# systemd user unit — rendered from deploy/config.sh and uploaded to
+# ~/.config/systemd/user/ by every deploy and rollback. Do not edit the deployed
+# copy on the server: it is overwritten.
+
+[Unit]
+Description=armada-fleet-print (impression de flottes Star Wars: Armada, servi sous __PREFIX__)
+
+[Service]
+Type=exec
+# A symlink to releases/<version>, switched by deploy and rollback.
+ExecStart=__REMOTE_DIR__/current serve
+
+# No port: nginx reaches the app through this socket, from inside its container.
+Environment=AFP_SOCKET=__SOCKET_DIR__/__SOCKET_NAME__
+# Shared by all versions, so a deploy does not download every card again.
+Environment=AFP_CARDS_DIR=__REMOTE_DIR__/data/pics
+Environment=RUST_LOG=info
+# Plain log lines in the journal.
+Environment=NO_COLOR=1
+
+# The card cache is only ours; the socket mode is set explicitly by the app.
+UMask=0077
+NoNewPrivileges=yes
+
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=default.target

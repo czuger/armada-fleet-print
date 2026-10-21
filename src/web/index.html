@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ArmadaFleetPrint</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <style>h1 { text-align: center; margin-bottom: 30px; }</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Impression de flotte Armada</h1>
+
+    <div class="alert alert-danger">
+      Pour utiliser ce site, il faut impérativement avoir créé un compte sur
+      <a href="https://armada.ryankingston.com/" target="_blank">https://armada.ryankingston.com/</a>
+    </div>
+
+    <ul>
+      <li>Allez sur le site <a href="https://armada.ryankingston.com/" target="_blank">https://armada.ryankingston.com/</a></li>
+      <li>Créez une flotte.</li>
+      <li>Sauvegardez-la (IMPORTANT !).</li>
+      <li>Copiez le lien dans la barre d'url.</li>
+      <li>Collez-le en dessous et cliquez sur « Envoyer » (ça peut prendre du temps : 30-60 secondes au max).</li>
+      <li>Imprimez ou sauvegardez le pdf généré.</li>
+    </ul>
+
+    <form action="print" method="post">
+      <div class="form-group">
+        <input class="form-control" type="text" name="url" placeholder="https://armada.ryankingston.com/fleet/&lt;numéro&gt;/" required>
+      </div>
+      <button class="btn btn-primary" type="submit">Envoyer</button>
+    </form>
+  </div>
+</body>
+</html>
