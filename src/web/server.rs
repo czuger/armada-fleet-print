@@ -9,7 +9,7 @@ use std::path::Path;
 use axum::Router;
 use tokio::net::{TcpListener, UnixListener};
 
-use crate::fleet_printer::FleetPrinter;
+use crate::web::app_state::AppState;
 use crate::web::router::router;
 
 /// nginx runs in a container under another uid and needs write access to connect.
@@ -20,17 +20,13 @@ const SOCKET_MODE: u32 = 0o666;
 /// # Arguments
 /// * `addr` - TCP address and port to listen on when no socket is given.
 /// * `socket` - Unix socket path to listen on instead of `addr`.
-/// * `printer` - Printer shared by all requests.
+/// * `state` - Services shared by all requests.
 ///
 /// # Errors
 /// Returns [`io::Error`] if the listener cannot be set up, if the socket path is taken
 /// by something that is not a socket, or if the server fails.
-pub async fn serve(
-    addr: SocketAddr,
-    socket: Option<&Path>,
-    printer: FleetPrinter,
-) -> io::Result<()> {
-    let app = router(printer);
+pub async fn serve(addr: SocketAddr, socket: Option<&Path>, state: AppState) -> io::Result<()> {
+    let app = router(state);
     match socket {
         Some(path) => serve_unix(app, path).await,
         None => serve_tcp(app, addr).await,

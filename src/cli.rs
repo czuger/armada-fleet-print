@@ -9,8 +9,9 @@ use clap::{Parser, Subcommand};
 use crate::armada_data::{ArmadaDatabase, DataSync, DataSyncError};
 use crate::fleet_printer::{FleetPrinter, PrintError};
 use crate::fleet_url::{FleetUrl, FleetUrlError};
+use crate::game::GameService;
 use crate::http_client::build_http_client;
-use crate::web::serve;
+use crate::web::{AppState, serve};
 
 /// Command-line arguments.
 #[derive(Debug, Parser)]
@@ -54,6 +55,14 @@ pub enum Command {
             help = "Socket Unix d'écoute (remplace --bind)"
         )]
         socket: Option<PathBuf>,
+        /// Directory where multi-player games are saved.
+        #[arg(
+            long,
+            env = "AFP_GAMES_DIR",
+            default_value = "games",
+            help = "Dossier des parties à plusieurs joueurs"
+        )]
+        games_dir: PathBuf,
     },
     /// Prints one fleet to a PDF file without starting the server.
     #[command(about = "Imprime une flotte dans un fichier PDF, sans serveur")]
@@ -130,9 +139,16 @@ impl Cli {
     /// Returns [`CliError`] if the command fails.
     pub async fn run(self) -> Result<(), CliError> {
         match self.command {
-            Command::Serve { bind, socket } => {
-                let printer = FleetPrinter::new(self.cards_dir).map_err(CliError::Client)?;
-                serve(bind, socket.as_deref(), printer).await?;
+            Command::Serve {
+                bind,
+                socket,
+                games_dir,
+            } => {
+                let state = AppState {
+                    printer: FleetPrinter::new(self.cards_dir).map_err(CliError::Client)?,
+                    games: GameService::new(games_dir).map_err(CliError::Client)?,
+                };
+                serve(bind, socket.as_deref(), state).await?;
             }
             Command::Render { url, output } => {
                 let printer = FleetPrinter::new(self.cards_dir).map_err(CliError::Client)?;

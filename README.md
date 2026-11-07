@@ -13,6 +13,16 @@ The PDF uses US Letter pages:
 - **Objectives:** one row after the squadrons.
 - **Footer:** the fleet name, squadron and total points, and the page number.
 
+### Multi-player games
+
+The home page also creates a game shared by several players. There is no account: the game lives at a secret link (`games/<32 hex digits>/`), and anyone holding it can view and edit it. On the game page you can:
+
+- **Paste the stock** of miniatures from a spreadsheet, with the columns Owner, Faction, Figurine Name, Size, Type (`Ship` or `Squadron`) and Qty. Copied cells are tab-separated; the header line is optional. Each name is matched to a fleet builder model ("Nebulon B Frigate" → `nebulon-b`) using the builder's card list, and names that match nothing are listed.
+- **Add fleets**, each with a player name and a fleet builder link. Fleets are read again whenever the page is shown, so later edits on the builder are taken into account.
+- **See the result:** miniatures used per model against the stock (a named squadron counts as its craft, so Luke Skywalker uses an X-wing), and unique cards taken by more than one fleet, matched by name ("Darth Vader (TIE Defender)" clashes with the commander Darth Vader).
+
+Each game is saved as one JSON file in the games directory.
+
 ## Running it yourself
 
 You need a Rust toolchain with edition 2024 support (1.85 or later).
@@ -48,6 +58,7 @@ The five data files are downloaded over HTTPS at the resolved commit, whose SHA 
 | `--bind`      | `AFP_BIND`           | `127.0.0.1:4567` | Address the web server listens on |
 | `--socket`    | `AFP_SOCKET`         | none             | Unix socket to listen on instead of `--bind` |
 | `--cards-dir` | `AFP_CARDS_DIR`      | `pics`           | Card image cache directory        |
+| `--games-dir` | `AFP_GAMES_DIR`      | `games`          | Directory of saved multi-player games (`serve` only) |
 |               | `RUST_LOG`           | `info`           | Log filter                        |
 
 ## Deployment
@@ -101,6 +112,7 @@ $REMOTE_DIR/
   current_version.txt          running version
   previous_version.txt         version restored by make rollback
   data/pics/                   card image cache, shared by all versions
+  data/games/                  multi-player games, one JSON file each: back it up
   remote.sh                    server side of the scripts, re-uploaded by every command
 ~/.config/systemd/user/armada-fleet-print.service
 $NGINX_CONF_DIR/armada-fleet-print.conf

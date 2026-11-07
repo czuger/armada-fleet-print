@@ -32,6 +32,13 @@ pub(crate) struct RawPoints {
 pub(crate) struct RawShip {
     pub image: CardName,
     #[serde(default)]
+    pub title: String,
+    /// Hull shared by the ship's variants, e.g. `corvette` for both CR90 cards.
+    #[serde(rename = "type", default)]
+    pub model: String,
+    #[serde(default)]
+    pub unique: bool,
+    #[serde(default)]
     pub upgrades: RawUpgrades,
 }
 
@@ -47,6 +54,13 @@ pub(crate) enum RawUpgrades {
 #[derive(Debug, Deserialize)]
 pub(crate) struct RawSquadron {
     pub image: CardName,
+    #[serde(default)]
+    pub title: String,
+    /// Craft shared by generic and named squadrons, e.g. `x-wing` for Luke Skywalker.
+    #[serde(rename = "type", default)]
+    pub model: String,
+    #[serde(default)]
+    pub unique: bool,
     pub quantity: RawQuantity,
 }
 
@@ -60,6 +74,10 @@ pub(crate) enum RawQuantity {
 #[derive(Debug, Deserialize)]
 pub(crate) struct RawCard {
     pub image: CardName,
+    #[serde(default)]
+    pub title: String,
+    #[serde(default)]
+    pub unique: bool,
 }
 
 impl Default for RawUpgrades {
@@ -76,6 +94,15 @@ impl RawUpgrades {
             Self::List(slots) => slots,
         };
         slots.into_iter().flatten().map(|card| card.image).collect()
+    }
+
+    /// Equipped upgrade cards, in slot order, without consuming the slots.
+    pub fn iter(&self) -> impl Iterator<Item = &RawCard> {
+        let slots: Vec<&Option<RawCard>> = match self {
+            Self::Slots(slots) => slots.values().collect(),
+            Self::List(slots) => slots.iter().collect(),
+        };
+        slots.into_iter().flatten()
     }
 }
 

@@ -9,6 +9,7 @@ use crate::card_image::CardImage;
 use crate::card_name::CardName;
 use crate::card_store::{CardStore, CardStoreError};
 use crate::fleet::{Fleet, FleetParseError};
+use crate::fleet_page::fetch_fleet_page;
 use crate::fleet_url::FleetUrl;
 use crate::http_client::build_http_client;
 use crate::layout::{LayoutError, lay_out};
@@ -69,16 +70,13 @@ impl FleetPrinter {
     /// # Errors
     /// Returns [`PrintError`] describing the failed step.
     pub async fn print(&self, url: &FleetUrl) -> Result<Vec<u8>, PrintError> {
-        let html = self.fetch_page(url).await.map_err(PrintError::FetchPage)?;
+        let html = fetch_fleet_page(&self.client, url)
+            .await
+            .map_err(PrintError::FetchPage)?;
         let fleet = Fleet::from_page_html(&html)?;
         let encoded = self.cards.load_all(&fleet.cards()).await?;
         // Decoding and compressing images is CPU-bound, so keep it off the async workers.
         tokio::task::spawn_blocking(move || render_fleet(&fleet, &encoded)).await?
-    }
-
-    async fn fetch_page(&self, url: &FleetUrl) -> Result<String, reqwest::Error> {
-        let response = self.client.get(url.as_url().clone()).send().await?;
-        response.error_for_status()?.text().await
     }
 }
 

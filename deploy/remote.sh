@@ -24,6 +24,7 @@ NGINX_CONF_NAME="${NGINX_CONF_NAME:-armada-fleet-print.conf}"
 RELEASES_DIR="$REMOTE_DIR/releases"
 DATA_DIR="$REMOTE_DIR/data"
 CARDS_DIR="$DATA_DIR/pics"
+GAMES_DIR="$DATA_DIR/games"
 CURRENT_LINK="$REMOTE_DIR/current"
 CURRENT_FILE="$REMOTE_DIR/current_version.txt"
 PREVIOUS_FILE="$REMOTE_DIR/previous_version.txt"
@@ -209,7 +210,7 @@ cmd_versions() {
 
 # One-time server preparation: directory layout + prerequisites check.
 cmd_init() {
-  mkdir -p "$RELEASES_DIR" "$CARDS_DIR"
+  mkdir -p "$RELEASES_DIR" "$CARDS_DIR" "$GAMES_DIR"
   chmod 700 "$DATA_DIR"
   echo "arborescence prête sous $REMOTE_DIR"
 

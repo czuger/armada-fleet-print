@@ -14,6 +14,8 @@ ExecStart=__REMOTE_DIR__/current serve
 Environment=AFP_SOCKET=__SOCKET_DIR__/__SOCKET_NAME__
 # Shared by all versions, so a deploy does not download every card again.
 Environment=AFP_CARDS_DIR=__REMOTE_DIR__/data/pics
+# Multi-player games, one JSON file each: user data, kept across deploys.
+Environment=AFP_GAMES_DIR=__REMOTE_DIR__/data/games
 Environment=RUST_LOG=info
 # Plain log lines in the journal.
 Environment=NO_COLOR=1
