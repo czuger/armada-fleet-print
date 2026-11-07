@@ -15,7 +15,7 @@ Armada Fleet Print: a small web app that takes a saved fleet URL from https://ar
 - Tests: `cargo test`. Run a single test with `cargo test --test layout drops_trailing_empty_page`, or `cargo test fleet_url::` for unit tests.
 - Lint and format: `cargo clippy --all-targets`, `cargo fmt`
 
-Card images are cached in `pics/` relative to the CWD (gitignored). Override with `--cards-dir` or `AFP_CARDS_DIR`. The server uses no database.
+Card images are cached in `pics/` relative to the CWD (gitignored). Override with `--cards-dir` or `AFP_CARDS_DIR`. Multi-player games are saved as JSON files in `games/` (gitignored); override with `--games-dir` or `AFP_GAMES_DIR`. The server uses no database.
 
 ## Architecture
 
@@ -32,13 +32,22 @@ The layout in `src/layout/fleet_layout.rs` uses US Letter pages with 36 pt margi
 - **Cleanup:** empty pages are dropped.
 - **Footer:** "<name> (squadron pts/total) - site" and "page N sur M".
 
-`web::WebError` maps each failure to an HTTP status and a French message on `src/web/error.html`, and logs the English error chain (`error_chain`). The HTML pages are static files embedded with `include_str!`.
+### Multi-player games (`src/game/`)
+
+A game is reached only through its secret link `games/<GameId>/` (128 random bits as 32 hex digits; `GameId` parsing only accepts that shape, so it is a safe file name). The trailing slash matters: the page's forms and redirects are relative (`stock`, `fleets`, `./`, `../../print`) so they work under any URL prefix. `GameStore` saves one JSON file per game with `write_atomic` and serializes read-modify-write cycles with a mutex. `GameService` holds the operations:
+- **Stock:** `Stock::parse` reads a spreadsheet paste (tabs, or 2+ spaces when tabs were lost; columns Owner, Faction, Figurine Name, Size, Type, Qty; optional header). Each name is matched once, at import, to a builder model (`type` field of the builder cards, e.g. `mc80-liberty`) by `ModelCatalogue::resolve` and `name_matcher`: an exact title or type wins, otherwise words score by rarity among the candidates of the same kind and faction, and a tie matches nothing. The catalogue comes from the builder's `cards.js`, downloaded by `CatalogueSource` and cached in memory for a day.
+- **Fleets:** a fleet is validated by fetching it when added, then re-read on every page view (`FleetRoster`: miniatures per model, unique card titles).
+- **Report:** `GameReport` compares the used miniatures with the stock per model, and lists unique cards held more than once, compared by name without the trailing "(…)" variant.
+
+`tests/fixtures/builder_cards.js` is a reduced extract of the builder card list (title, type, faction, unique) and `tests/fixtures/stock.tsv` a real stock sheet.
+
+`web::WebError` maps each failure to an HTTP status and a French message on `src/web/error.html`, and logs the English error chain (`error_chain`). The home and error pages are static files embedded with `include_str!`; the game page is an askama template in `src/web/templates/` (configured by `askama.toml`), which escapes HTML and resolves bare calls as methods of the template struct. Errors caused by form input re-render the game page with the message and the typed text.
 
 `tests/fixtures/fleet_207536.html` is a real saved fleet page used by the parsing tests.
 
 ### Card database (`src/armada_data/`)
 
-`DataSync` resolves the ref (latest GitHub release, else `master`) to a SHA with `GithubSource`, downloads `Star_Wars_Armada.gst` and the four faction `.cat` files from `raw.githubusercontent.com` at that SHA, parses each with `BsCatalogue` (roxmltree, namespaces ignored, `<modifiers>` ignored), builds an `ArmadaDatabase` and writes it with `atomic_file::write_atomic`. `CardKind` maps the profile `typeName` to ship, squadron, speed chart, upgrade or objective. Pitfalls handled there:
+`DataSync` resolves the ref (latest GitHub release, else `master`) to a SHA with `GithubSource`, downloads `Star_Wars_Armada.gst` and the four faction `.cat` files from `raw.githubusercontent.com` at that SHA, parses each with `BsCatalogue` (roxmltree, namespaces ignored, `<modifiers>` ignored), builds an `ArmadaDatabase` and writes it with `atomic_file::write_atomic`. The output (`data/armada.json` by default) holds `schema_version`, `source` (repo, ref, commit SHA, `generated_at`) and four arrays: `ships`, `squadrons`, `upgrades` and `objectives`, each entry keyed by its BSData `id`. The server does not read it yet. `CardKind` maps the profile `typeName` to ship, squadron, speed chart, upgrade or objective. Pitfalls handled there:
 - a card is unique if the profile name **or** the entry name starts with `•` (Mon Karren);
 - speed chart profiles are sorted by decreasing name length, since the XML order is reversed for the Acclamator; an empty cell means the speed is unavailable, `-` means 0;
 - upgrades are merged across files by (lowercase name, type, points) and accumulate `factions`; the points keep the two Ahsoka Tano officers apart;

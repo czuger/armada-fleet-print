@@ -16,3 +16,6 @@
 
 # Card database built by `data sync` from BSData, which has no license: not redistributed.
 /data
+
+# Multi-player games saved by the server (see --games-dir).
+/games

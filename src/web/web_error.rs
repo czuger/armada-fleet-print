@@ -7,7 +7,11 @@ use crate::error_chain::error_chain;
 use crate::fleet::FleetParseError;
 use crate::fleet_printer::PrintError;
 use crate::fleet_url::FleetUrlError;
+use crate::game::{GameError, GameIdError, GameStoreError};
 use crate::web::pages::error_page;
+
+/// Asked for when a game is created without a usable name; states `MAX_NAME_CHARS`.
+const GAME_NAME_MESSAGE: &str = "Donnez un nom à la partie (100 caractères au plus).";
 
 /// Error answered to a web request.
 #[derive(Debug, thiserror::Error)]
@@ -18,6 +22,15 @@ pub enum WebError {
     /// The fleet could not be printed.
     #[error("printing fleet failed")]
     Print(#[from] PrintError),
+    /// The link names no game.
+    #[error("invalid game link")]
+    InvalidGameId(#[from] GameIdError),
+    /// A game operation failed.
+    #[error("game operation failed")]
+    Game(#[from] GameError),
+    /// A page could not be rendered.
+    #[error("rendering page failed")]
+    Template(#[from] askama::Error),
 }
 
 impl WebError {
@@ -36,6 +49,11 @@ impl WebError {
                 StatusCode::BAD_GATEWAY
             }
             Self::Print(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::InvalidGameId(_) | Self::Game(GameError::Store(GameStoreError::NotFound)) => {
+                StatusCode::NOT_FOUND
+            }
+            Self::Game(GameError::InvalidName) => StatusCode::BAD_REQUEST,
+            Self::Game(_) | Self::Template(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 
@@ -62,6 +80,11 @@ impl WebError {
                 "Impossible de télécharger les images des cartes. Réessayez dans quelques instants."
             }
             Self::Print(_) => "Erreur interne lors de la création du PDF.",
+            Self::InvalidGameId(_) | Self::Game(GameError::Store(GameStoreError::NotFound)) => {
+                "Cette partie n'existe pas. Vérifiez le lien."
+            }
+            Self::Game(GameError::InvalidName) => GAME_NAME_MESSAGE,
+            Self::Game(_) | Self::Template(_) => "Erreur interne lors du traitement de la partie.",
         }
     }
 }
@@ -75,5 +98,16 @@ impl IntoResponse for WebError {
             tracing::warn!("{}", error_chain(&self));
         }
         (status, Html(error_page(self.user_message()))).into_response()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::game::MAX_NAME_CHARS;
+
+    #[test]
+    fn game_name_message_states_the_limit() {
+        assert!(GAME_NAME_MESSAGE.contains(&MAX_NAME_CHARS.to_string()));
     }
 }

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ game.name }} - ArmadaFleetPrint</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <style>
+    h1 { text-align: center; margin: 20px 0 30px; }
+    h2 { margin-top: 40px; }
+    td.num, th.num { text-align: right; white-space: nowrap; }
+    .shares { color: #6c757d; font-size: 0.85em; }
+    textarea { font-family: monospace; font-size: 0.85em; }
+    .inline { display: inline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <p><a href="../../">&larr; Impression de flotte</a></p>
+    <h1>{{ game.name }}</h1>
+
+    <div class="alert alert-info">
+      Cette partie n'est accessible que par son lien. Toute personne qui l'a peut la consulter et la modifier.
+      <input id="share-link" class="form-control mt-2" type="text" readonly onclick="this.select()">
+    </div>
+
+    {% if let Some(message) = error %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endif %}
+
+    <h2>Résultat</h2>
+    {% if report.models.is_empty() %}
+    <p>Ajoutez un stock et des flottes pour voir le résultat.</p>
+    {% else %}
+      {% if report.has_shortfall() %}
+      <div class="alert alert-danger">Il manque des figurines dans le stock (lignes en rouge).</div>
+      {% else %}
+      <div class="alert alert-success">Le stock suffit pour toutes les flottes.</div>
+      {% endif %}
+
+      {% if report.duplicates.is_empty() %}
+      <div class="alert alert-success">Aucune carte unique en double.</div>
+      {% else %}
+      <div class="alert alert-danger">
+        Cartes uniques en double :
+        <ul class="mb-0">
+          {% for card in report.duplicates %}
+          <li><strong>{{ card.name }}</strong> : {{ card.players.join(", ") }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <table class="table table-sm">
+        <thead>
+          <tr><th></th><th class="num">Utilisées</th><th class="num">Stock</th></tr>
+        </thead>
+        <tbody>
+          {% for total in report.totals %}
+          <tr{% if total.used > total.stock %} class="table-danger"{% endif %}>
+            <th>{{ total.kind.plural_label() }}</th>
+            <td class="num">{{ total.used }}</td>
+            <td class="num">{{ total.stock }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <table class="table table-sm table-hover">
+        <thead>
+          <tr><th>Figurine</th><th class="num">Utilisées</th><th class="num">Stock</th><th class="num">Manque</th></tr>
+        </thead>
+        <tbody>
+          {% for usage in report.models %}
+          <tr{% if usage.shortfall() > 0 %} class="table-danger"{% endif %}>
+            <td>
+              {{ usage.name }}
+              {% if !usage.players.is_empty() %}<div class="shares">Utilisées par {{ shares(usage.players) }}</div>{% endif %}
+              {% if !usage.owners.is_empty() %}<div class="shares">Stock : {{ shares(usage.owners) }}</div>{% endif %}
+            </td>
+            <td class="num">{{ usage.used }}</td>
+            <td class="num">{{ usage.stock }}</td>
+            <td class="num">{% if usage.shortfall() > 0 %}{{ usage.shortfall() }}{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    <h2>Flottes</h2>
+    {% if report.fleets.is_empty() %}
+    <p>Aucune flotte pour l'instant.</p>
+    {% else %}
+    <table class="table table-sm">
+      <thead>
+        <tr><th>Joueur</th><th>Flotte</th><th class="num">Points</th><th class="num">Vaisseaux</th><th class="num">Escadrons</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for result in report.fleets %}
+        <tr>
+          <td>{{ result.fleet.player }}</td>
+          {% match result.roster %}
+          {% when Ok(roster) %}
+          <td><a href="{{ result.fleet.url }}" target="_blank" rel="noopener">{% if roster.name.is_empty() %}(sans nom){% else %}{{ roster.name }}{% endif %}</a></td>
+          <td class="num">{{ roster.total_points }}</td>
+          <td class="num">{{ roster.figure_total(FigureKind::Ship) }}</td>
+          <td class="num">{{ roster.figure_total(FigureKind::Squadron) }}</td>
+          {% when Err(err) %}
+          <td colspan="4" class="text-danger">
+            <a href="{{ result.fleet.url }}" target="_blank" rel="noopener">{{ result.fleet.url }}</a><br>
+            {{ fleet_error(err) }}
+          </td>
+          {% endmatch %}
+          <td class="num">
+            <form class="inline" action="../../print" method="post" target="_blank">
+              <input type="hidden" name="url" value="{{ result.fleet.url }}">
+              <button class="btn btn-sm btn-outline-secondary" type="submit">PDF</button>
+            </form>
+            <form class="inline" action="fleets/{{ result.fleet.id }}/delete" method="post" onsubmit="return confirm('Retirer cette flotte de la partie ?')">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Retirer</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+
+    <form action="fleets" method="post">
+      <div class="form-row">
+        <div class="col-md-3 mb-2">
+          <input class="form-control" type="text" name="player" value="{{ player_draft }}" placeholder="Joueur" maxlength="100" required>
+        </div>
+        <div class="col-md-7 mb-2">
+          <input class="form-control" type="text" name="url" value="{{ url_draft }}" placeholder="https://armada.ryankingston.com/fleet/&lt;numéro&gt;/" required>
+        </div>
+        <div class="col-md-2 mb-2">
+          <button class="btn btn-primary btn-block" type="submit">Ajouter</button>
+        </div>
+      </div>
+    </form>
+
+    <h2>Stock</h2>
+    {% if game.stock.lines.is_empty() %}
+    <p>Aucun stock pour l'instant.</p>
+    {% else %}
+    <p>{{ game.stock.lines.len() }} lignes.</p>
+    {% endif %}
+    {% if !unmatched.is_empty() %}
+    <div class="alert alert-warning">
+      Figurines non reconnues, ignorées dans le résultat (corrigez leur nom ou leur type) :
+      <ul class="mb-0">
+        {% for line in unmatched %}
+        <li>{{ line.name }} ({{ line.owner }}, {{ line.faction }}, {{ line.kind.sheet_label() }})</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <form action="stock" method="post" class="mb-5">
+      <div class="form-group">
+        <label for="stock-text">
+          Copiez les lignes du tableur (Google Sheets) avec les colonnes Owner, Faction, Figurine Name,
+          Size, Type et Qty, puis collez-les ici. La ligne d'en-tête est facultative. Le nouveau
+          stock remplace l'ancien.
+        </label>
+        <textarea id="stock-text" class="form-control" name="text" rows="12" required>{{ stock_draft }}</textarea>
+      </div>
+      <button class="btn btn-primary" type="submit">Enregistrer le stock</button>
+    </form>
+  </div>
+  <script>document.getElementById("share-link").value = window.location.href;</script>
+</body>
+</html>

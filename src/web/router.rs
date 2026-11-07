@@ -9,18 +9,29 @@ use serde::Deserialize;
 
 use crate::fleet_printer::FleetPrinter;
 use crate::fleet_url::FleetUrl;
+use crate::web::app_state::AppState;
+use crate::web::game_routes::{
+    add_fleet, add_trailing_slash, create_game, remove_fleet, replace_stock, show_game,
+};
 use crate::web::pages::INDEX;
 use crate::web::web_error::WebError;
 
-/// Builds the application: `GET /` shows the form, `POST /print` returns the fleet PDF.
+/// Builds the application: `GET /` shows the form, `POST /print` returns the fleet PDF,
+/// and `/games` holds the multi-player games.
 ///
 /// # Arguments
-/// * `printer` - Printer shared by all requests.
-pub fn router(printer: FleetPrinter) -> Router {
+/// * `state` - Services shared by all requests.
+pub fn router(state: AppState) -> Router {
     Router::new()
         .route("/", get(index))
         .route("/print", post(print))
-        .with_state(printer)
+        .route("/games", post(create_game))
+        .route("/games/{id}", get(add_trailing_slash))
+        .route("/games/{id}/", get(show_game))
+        .route("/games/{id}/stock", post(replace_stock))
+        .route("/games/{id}/fleets", post(add_fleet))
+        .route("/games/{id}/fleets/{fleet}/delete", post(remove_fleet))
+        .with_state(state)
 }
 
 #[derive(Debug, Deserialize)]

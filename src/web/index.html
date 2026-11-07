@@ -31,6 +31,19 @@
       </div>
       <button class="btn btn-primary" type="submit">Envoyer</button>
     </form>
+
+    <h2 class="mt-5">Partie à plusieurs joueurs</h2>
+    <p>
+      Rassemblez les flottes de plusieurs joueurs et le stock de figurines de chacun pour vérifier
+      qu'il y a assez de figurines et qu'aucune carte unique n'est prise deux fois. La partie
+      créée n'est accessible que par son lien : gardez-le et partagez-le avec les autres joueurs.
+    </p>
+    <form action="games" method="post">
+      <div class="form-group">
+        <input class="form-control" type="text" name="name" placeholder="Nom de la partie" maxlength="100" required>
+      </div>
+      <button class="btn btn-primary" type="submit">Créer la partie</button>
+    </form>
   </div>
 </body>
 </html>
