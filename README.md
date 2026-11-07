@@ -27,6 +27,20 @@ cargo run -- render https://armada.ryankingston.com/fleet/207536/ -o flotte.pdf
 
 Card images are downloaded from the fleet builder the first time they are needed, then cached on disk.
 
+### Card database
+
+`data sync` builds a local JSON database of every Star Wars: Armada card (ships with their speed charts, squadrons, upgrades, objectives) from the community BattleScribe data of [BSData/star-wars-armada](https://github.com/BSData/star-wars-armada). It is an offline tool: the web server does not use it.
+
+```sh
+# Latest BSData release, written to data/armada.json
+cargo run -- data sync
+
+# A given tag, branch or commit, elsewhere
+cargo run -- data sync --ref master -o /tmp/armada.json
+```
+
+The five data files are downloaded over HTTPS at the resolved commit, whose SHA is recorded in the output. Cards are sorted by faction then name, so two runs differ only by their `source` block. Conditional BattleScribe modifiers are not applied: the database holds base values. `data/` is not versioned, because the BSData repository has no license (see Acknowledgments).
+
 ### Configuration
 
 | Option        | Environment variable | Default          | Purpose                           |
@@ -57,3 +71,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Acknowledgments
 
 Thanks to Ryan Kingston for the great work on the fleet builder :)
+
+The card database built by `data sync` comes from [BSData/star-wars-armada](https://github.com/BSData/star-wars-armada), maintained by the BSData community, which is not endorsed by BattleScribe or any publisher. That repository has no license file, so its data is not redistributed here: each user downloads it. Star Wars: Armada and its card contents are © Fantasy Flight Games, Atomic Mass Games and Lucasfilm Ltd.

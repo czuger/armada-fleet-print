@@ -2,12 +2,14 @@
 
 use std::io;
 use std::net::SocketAddr;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use clap::{Parser, Subcommand};
 
+use crate::armada_data::{ArmadaDatabase, DataSync, DataSyncError};
 use crate::fleet_printer::{FleetPrinter, PrintError};
 use crate::fleet_url::{FleetUrl, FleetUrlError};
+use crate::http_client::build_http_client;
 use crate::web::serve;
 
 /// Command-line arguments.
@@ -68,6 +70,37 @@ pub enum Command {
         )]
         output: PathBuf,
     },
+    /// Manages the local card database.
+    #[command(about = "Gère la base locale des cartes")]
+    Data {
+        /// Database action to run.
+        #[command(subcommand)]
+        command: DataCommand,
+    },
+}
+
+/// Actions on the local card database.
+#[derive(Debug, Subcommand)]
+pub enum DataCommand {
+    /// Builds the database from the BSData repository.
+    #[command(about = "Construit la base JSON des cartes à partir du dépôt BSData")]
+    Sync {
+        /// Git reference to read: tag, branch or commit. Defaults to the latest release.
+        #[arg(
+            long = "ref",
+            value_name = "REF",
+            help = "Référence git à lire : tag, branche ou commit (par défaut, la dernière release)"
+        )]
+        git_ref: Option<String>,
+        /// Output file.
+        #[arg(
+            short,
+            long,
+            default_value = "data/armada.json",
+            help = "Fichier JSON à écrire"
+        )]
+        output: PathBuf,
+    },
 }
 
 /// Error returned when a command fails.
@@ -82,6 +115,9 @@ pub enum CliError {
     /// Printing the fleet failed.
     #[error("printing fleet failed")]
     Print(#[from] PrintError),
+    /// Building the card database failed.
+    #[error("building card database failed")]
+    DataSync(#[from] DataSyncError),
     /// Binding the server or writing the PDF failed.
     #[error("I/O failed")]
     Io(#[from] io::Error),
@@ -93,15 +129,45 @@ impl Cli {
     /// # Errors
     /// Returns [`CliError`] if the command fails.
     pub async fn run(self) -> Result<(), CliError> {
-        let printer = FleetPrinter::new(self.cards_dir).map_err(CliError::Client)?;
         match self.command {
-            Command::Serve { bind, socket } => serve(bind, socket.as_deref(), printer).await?,
+            Command::Serve { bind, socket } => {
+                let printer = FleetPrinter::new(self.cards_dir).map_err(CliError::Client)?;
+                serve(bind, socket.as_deref(), printer).await?;
+            }
             Command::Render { url, output } => {
+                let printer = FleetPrinter::new(self.cards_dir).map_err(CliError::Client)?;
                 let pdf = printer.print(&FleetUrl::parse(&url)?).await?;
                 tokio::fs::write(&output, pdf).await?;
                 println!("PDF écrit dans {}", output.display());
             }
+            Command::Data {
+                command: DataCommand::Sync { git_ref, output },
+            } => {
+                let client = build_http_client().map_err(CliError::Client)?;
+                let database = DataSync::new(client)
+                    .run(git_ref.as_deref(), &output)
+                    .await?;
+                print_summary(&database, &output);
+            }
         }
         Ok(())
     }
+}
+
+/// Prints what `data sync` wrote.
+fn print_summary(database: &ArmadaDatabase, output: &Path) {
+    let source = &database.source;
+    println!(
+        "Base écrite dans {} (BSData {}, commit {})",
+        output.display(),
+        source.git_ref,
+        source.commit
+    );
+    println!(
+        "{} vaisseaux, {} escadrons, {} améliorations, {} objectifs",
+        database.ships.len(),
+        database.squadrons.len(),
+        database.upgrades.len(),
+        database.objectives.len()
+    );
 }

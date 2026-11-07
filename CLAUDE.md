@@ -11,10 +11,11 @@ Armada Fleet Print: a small web app that takes a saved fleet URL from https://ar
 - Build: `cargo build` (edition 2024)
 - Dev server: `./dev.sh`, which runs `cargo run -- serve`. It listens on `127.0.0.1:4567`; pass `--bind` or set `AFP_BIND` to change that, or `--socket`/`AFP_SOCKET` to listen on a Unix socket instead.
 - Render one fleet without the server: `cargo run -- render https://armada.ryankingston.com/fleet/207536/ -o flotte.pdf`
+- Build the card database from BSData (offline tool, not used by the server): `cargo run -- data sync [--ref <git-ref>] [-o data/armada.json]`. `data/` is gitignored because BSData has no license.
 - Tests: `cargo test`. Run a single test with `cargo test --test layout drops_trailing_empty_page`, or `cargo test fleet_url::` for unit tests.
 - Lint and format: `cargo clippy --all-targets`, `cargo fmt`
 
-Card images are cached in `pics/` relative to the CWD (gitignored). Override with `--cards-dir` or `AFP_CARDS_DIR`. No database is used.
+Card images are cached in `pics/` relative to the CWD (gitignored). Override with `--cards-dir` or `AFP_CARDS_DIR`. The server uses no database.
 
 ## Architecture
 
@@ -34,6 +35,16 @@ The layout in `src/layout/fleet_layout.rs` uses US Letter pages with 36 pt margi
 `web::WebError` maps each failure to an HTTP status and a French message on `src/web/error.html`, and logs the English error chain (`error_chain`). The HTML pages are static files embedded with `include_str!`.
 
 `tests/fixtures/fleet_207536.html` is a real saved fleet page used by the parsing tests.
+
+### Card database (`src/armada_data/`)
+
+`DataSync` resolves the ref (latest GitHub release, else `master`) to a SHA with `GithubSource`, downloads `Star_Wars_Armada.gst` and the four faction `.cat` files from `raw.githubusercontent.com` at that SHA, parses each with `BsCatalogue` (roxmltree, namespaces ignored, `<modifiers>` ignored), builds an `ArmadaDatabase` and writes it with `atomic_file::write_atomic`. `CardKind` maps the profile `typeName` to ship, squadron, speed chart, upgrade or objective. Pitfalls handled there:
+- a card is unique if the profile name **or** the entry name starts with `•` (Mon Karren);
+- speed chart profiles are sorted by decreasing name length, since the XML order is reversed for the Acclamator; an empty cell means the speed is unavailable, `-` means 0;
+- upgrades are merged across files by (lowercase name, type, points) and accumulate `factions`; the points keep the two Ahsoka Tano officers apart;
+- the objective station (`1.5 Stations`, in the `.gst`) is a ship with no faction and no size.
+
+`tests/fixtures/bsdata/` holds reduced extracts of release 1.7.8.
 
 ## misc/
 
