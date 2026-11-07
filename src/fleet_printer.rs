@@ -2,7 +2,6 @@
 
 use std::collections::HashMap;
 use std::path::PathBuf;
-use std::time::Duration;
 
 use reqwest::Client;
 
@@ -11,11 +10,9 @@ use crate::card_name::CardName;
 use crate::card_store::{CardStore, CardStoreError};
 use crate::fleet::{Fleet, FleetParseError};
 use crate::fleet_url::FleetUrl;
+use crate::http_client::build_http_client;
 use crate::layout::{LayoutError, lay_out};
 use crate::pdf::{RenderError, render};
-
-/// Timeout of each request to the fleet builder.
-const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
 
 /// Produces the printable PDF of saved fleets.
 #[derive(Debug, Clone)]
@@ -62,10 +59,7 @@ impl FleetPrinter {
     /// # Errors
     /// Returns [`reqwest::Error`] if the HTTP client cannot be initialized.
     pub fn new(cards_dir: PathBuf) -> Result<Self, reqwest::Error> {
-        let client = Client::builder()
-            .timeout(REQUEST_TIMEOUT)
-            .user_agent(concat!("armada-fleet-print/", env!("CARGO_PKG_VERSION")))
-            .build()?;
+        let client = build_http_client()?;
         let cards = CardStore::new(cards_dir, client.clone());
         Ok(Self { client, cards })
     }

@@ -3,11 +3,11 @@
 use std::collections::HashMap;
 use std::io;
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicU64, Ordering};
 
 use futures_util::{StreamExt, TryStreamExt, stream};
 use reqwest::Client;
 
+use crate::atomic_file::write_atomic;
 use crate::card_name::CardName;
 
 /// Where the fleet builder serves card images from.
@@ -15,9 +15,6 @@ const CARD_IMAGES_URL: &str = "https://armada.ryankingston.com/img/cards/";
 
 /// How many card images are downloaded at the same time.
 const MAX_CONCURRENT_DOWNLOADS: usize = 4;
-
-/// Suffix counter keeping temporary download files unique within the process.
-static DOWNLOAD_COUNTER: AtomicU64 = AtomicU64::new(0);
 
 /// Card image cache backed by a local directory. Images are downloaded once, then read from disk.
 #[derive(Debug, Clone)]
@@ -106,24 +103,13 @@ impl CardStore {
         Ok(bytes.map_err(to_error)?.to_vec())
     }
 
-    /// Writes `bytes` to `path` through a temporary file so readers never see partial images.
+    /// Writes `bytes` to `path` atomically so readers never see partial images.
     async fn save(&self, path: &Path, bytes: &[u8]) -> Result<(), CardStoreError> {
-        let io_error = |path: &Path| {
-            let path = path.to_path_buf();
-            move |source| CardStoreError::Io { path, source }
-        };
-        tokio::fs::create_dir_all(&self.dir)
+        write_atomic(path, bytes)
             .await
-            .map_err(io_error(&self.dir))?;
-        let suffix = DOWNLOAD_COUNTER.fetch_add(1, Ordering::Relaxed);
-        let mut temp_name = path.as_os_str().to_owned();
-        temp_name.push(format!(".{}-{suffix}.part", std::process::id()));
-        let temp_path = PathBuf::from(temp_name);
-        tokio::fs::write(&temp_path, bytes)
-            .await
-            .map_err(io_error(&temp_path))?;
-        tokio::fs::rename(&temp_path, path)
-            .await
-            .map_err(io_error(path))
+            .map_err(|err| CardStoreError::Io {
+                path: err.path,
+                source: err.source,
+            })
     }
 }

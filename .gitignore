@@ -16,3 +16,6 @@
 
 # Output of `render` with its default name.
 /flotte.pdf
+
+# Card database built by `data sync` from BSData, which has no license: not redistributed.
+/data
