@@ -51,41 +51,6 @@
         </ul>
       </div>
       {% endif %}
-
-      <table class="table table-sm">
-        <thead>
-          <tr><th></th><th class="num">Utilisées</th><th class="num">Stock</th></tr>
-        </thead>
-        <tbody>
-          {% for total in report.totals %}
-          <tr{% if total.used > total.stock %} class="table-danger"{% endif %}>
-            <th>{{ total.kind.plural_label() }}</th>
-            <td class="num">{{ total.used }}</td>
-            <td class="num">{{ total.stock }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-
-      <table class="table table-sm table-hover">
-        <thead>
-          <tr><th>Figurine</th><th class="num">Utilisées</th><th class="num">Stock</th><th class="num">Manque</th></tr>
-        </thead>
-        <tbody>
-          {% for usage in report.models %}
-          <tr{% if usage.shortfall() > 0 %} class="table-danger"{% endif %}>
-            <td>
-              {{ usage.name }}
-              {% if !usage.players.is_empty() %}<div class="shares">Utilisées par {{ shares(usage.players) }}</div>{% endif %}
-              {% if !usage.owners.is_empty() %}<div class="shares">Stock : {{ shares(usage.owners) }}</div>{% endif %}
-            </td>
-            <td class="num">{{ usage.used }}</td>
-            <td class="num">{{ usage.stock }}</td>
-            <td class="num">{% if usage.shortfall() > 0 %}{{ usage.shortfall() }}{% endif %}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
     {% endif %}
 
     <h2>Flottes</h2>
@@ -140,6 +105,45 @@
         </div>
       </div>
     </form>
+
+    {% if !report.models.is_empty() %}
+    <div class="mt-4">
+      <table class="table table-sm">
+        <thead>
+          <tr><th></th><th class="num">Utilisées</th><th class="num">Stock</th></tr>
+        </thead>
+        <tbody>
+          {% for total in report.totals %}
+          <tr{% if total.used > total.stock %} class="table-danger"{% endif %}>
+            <th>{{ total.kind.plural_label() }}</th>
+            <td class="num">{{ total.used }}</td>
+            <td class="num">{{ total.stock }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <table class="table table-sm table-hover">
+        <thead>
+          <tr><th>Figurine</th><th class="num">Utilisées</th><th class="num">Stock</th><th class="num">Manque</th></tr>
+        </thead>
+        <tbody>
+          {% for usage in report.models %}
+          <tr{% if usage.shortfall() > 0 %} class="table-danger"{% endif %}>
+            <td>
+              {{ usage.name }}
+              {% if !usage.players.is_empty() %}<div class="shares">Utilisées par {{ shares(usage.players) }}</div>{% endif %}
+              {% if !usage.owners.is_empty() %}<div class="shares">Stock : {{ shares(usage.owners) }}</div>{% endif %}
+            </td>
+            <td class="num">{{ usage.used }}</td>
+            <td class="num">{{ usage.stock }}</td>
+            <td class="num">{% if usage.shortfall() > 0 %}{{ usage.shortfall() }}{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
 
     <h2>Stock</h2>
     {% if game.stock.lines.is_empty() %}
