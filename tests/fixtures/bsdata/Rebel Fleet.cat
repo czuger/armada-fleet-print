@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<catalogue id="ebb6-1d9a-63f3-4ef6" name="Rebel Fleet" revision="55" battleScribeVersion="2.03" library="false" gameSystemId="4007-48b0-a016-7a8e" gameSystemRevision="41" xmlns="http://www.battlescribe.net/schema/catalogueSchema">
+  <selectionEntries>
+    <selectionEntry id="94ba-fc52-8543-4700" name="•Mon Karren" hidden="false" collective="false" import="true" type="upgrade">
+      <constraints>
+        <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="false" includeChildSelections="false" includeChildForces="false" id="maxSelections" type="max"/>
+        <constraint field="selections" scope="roster" value="1.0" percentValue="false" shared="true" includeChildSelections="true" includeChildForces="true" id="maxInRoster" type="max"/>
+      </constraints>
+      <profiles>
+        <profile id="a207-06a2-ac1c-b004" name="Mon Karren" hidden="false" typeId="16d6-f94c-4e0d-8993" typeName="2.1 Title">
+          <characteristics>
+            <characteristic name="Title Ability" typeId="7040-d6d1-e20e-c16c">[Concentrate Fire]:  While attacking a ship, the defender cannot spend more than 1 defense token during this attack.</characteristic>
+            <characteristic name="Setup" typeId="6f6a-5eba-c2ee-2006"/>
+            <characteristic name="Recur" typeId="cf46-034d-372c-3792"/>
+            <characteristic name="Ready Cost" typeId="b20e-3783-9a5e-dbf7"/>
+          </characteristics>
+        </profile>
+      </profiles>
+      <costs>
+        <cost name="pts" typeId="points" value="6.0"/>
+      </costs>
+    </selectionEntry>
+    <selectionEntry id="a2ad-7e34-7471-914a" name="Gunnery Team" hidden="false" collective="false" import="true" type="upgrade">
+      <constraints>
+        <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="false" includeChildSelections="false" includeChildForces="false" id="408a-7e99-57b9-d575" type="max"/>
+      </constraints>
+      <profiles>
+        <profile id="aed0-7aa6-d1f1-adb3" name="Gunnery Team" hidden="false" typeId="229c-c950-27d2-b599" typeName="3.2 Weapons Team">
+          <characteristics>
+            <characteristic name="Weapons Team Ability" typeId="f63e-d559-f525-14e3">[Concentrate Fire]:  The next attack you perform this activation can be performed from this hull zone.  
+    your hull zones cannot target the same ship or squadron more than once during your activation.</characteristic>
+            <characteristic name="Setup" typeId="1bf9-55e6-8728-ac34"/>
+            <characteristic name="Recur" typeId="4edf-cbf3-3e26-fa72"/>
+            <characteristic name="Ready Cost" typeId="2c53-184d-5e9d-fa22"/>
+          </characteristics>
+        </profile>
+      </profiles>
+      <costs>
+        <cost name="pts" typeId="points" value="7.0"/>
+      </costs>
+    </selectionEntry>
+  </selectionEntries>
+</catalogue>

@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}{{ game.name }} - ArmadaFleetPrint{% endblock %}
+
+{% block style %}
+    h1 { margin: 20px 0 30px; }
+    h2 { margin-top: 40px; }
+    td.num, th.num { text-align: right; white-space: nowrap; }
+    .shares { color: #6c757d; font-size: 0.85em; }
+    textarea { font-family: monospace; font-size: 0.85em; }
+    .inline { display: inline; }
+{% endblock %}
+
+{% block content %}
+    {% include "lang_switch.html" %}
+    <p><a href="../../">{{ t.home_link }}</a></p>
+    <h1>{{ game.name }}</h1>
+
+    <div class="alert alert-info">
+      {{ t.link_notice }}
+      <input id="share-link" class="form-control mt-2" type="text" readonly onclick="this.select()">
+    </div>
+
+    {% if let Some(message) = error %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endif %}
+
+    <h2>{{ t.results }}</h2>
+    {% if report.models.is_empty() %}
+    <p>{{ t.results_empty }}</p>
+    {% else %}
+      {% if report.has_shortfall() %}
+      <div class="alert alert-danger">{{ t.shortfall }}</div>
+      {% else %}
+      <div class="alert alert-success">{{ t.enough }}</div>
+      {% endif %}
+
+      {% if report.duplicates.is_empty() %}
+      <div class="alert alert-success">{{ t.no_duplicates }}</div>
+      {% else %}
+      <div class="alert alert-danger">
+        {{ t.duplicates }}
+        <ul class="mb-0">
+          {% for card in report.duplicates %}
+          <li><strong>{{ card.name }}</strong>{{ t.colon }}{{ card.players.join(", ") }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    {% endif %}
+
+    <h2>{{ t.fleets }}</h2>
+    {% if report.fleets.is_empty() %}
+    <p>{{ t.no_fleets }}</p>
+    {% else %}
+    <table class="table table-sm">
+      <thead>
+        <tr><th>{{ t.player }}</th><th>{{ t.fleet }}</th><th class="num">{{ t.points }}</th><th class="num">{{ t.ships }}</th><th class="num">{{ t.squadrons }}</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for result in report.fleets %}
+        <tr{% if is_replacing(result.fleet) %} class="table-active"{% endif %}>
+          <td>{{ result.fleet.player }}</td>
+          {% match result.roster %}
+          {% when Ok(roster) %}
+          <td><a href="{{ result.fleet.url }}" target="_blank" rel="noopener">{% if roster.name.is_empty() %}{{ t.unnamed }}{% else %}{{ roster.name }}{% endif %}</a></td>
+          <td class="num">{{ roster.total_points }}</td>
+          <td class="num">{{ roster.figure_total(FigureKind::Ship) }}</td>
+          <td class="num">{{ roster.figure_total(FigureKind::Squadron) }}</td>
+          {% when Err(err) %}
+          <td colspan="4" class="text-danger">
+            <a href="{{ result.fleet.url }}" target="_blank" rel="noopener">{{ result.fleet.url }}</a><br>
+            {{ fleet_error(err) }}
+          </td>
+          {% endmatch %}
+          <td class="num">
+            <form class="inline" action="../../print" method="post" target="_blank">
+              <input type="hidden" name="url" value="{{ result.fleet.url }}">
+              <button class="btn btn-sm btn-outline-secondary" type="submit">PDF</button>
+            </form>
+            <a class="btn btn-sm btn-outline-primary" href="./?replace={{ result.fleet.id }}#fleet-form">{{ t.replace }}</a>
+            <form class="inline" action="fleets/{{ result.fleet.id }}/delete" method="post" onsubmit="return confirm('{{ t.remove_confirm }}')">
+              <button class="btn btn-sm btn-outline-danger" type="submit">{{ t.remove }}</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endif %}
+
+    <form id="fleet-form" action="{% if replacing.is_some() %}replace{% else %}fleets{% endif %}" method="post">
+      {% if let Some(fleet) = replacing %}
+      <input type="hidden" name="fleet" value="{{ fleet.id }}">
+      <p class="mb-2"><strong>{{ t.replacing }}</strong>{{ t.colon }}{{ fleet.player }}, <a href="{{ fleet.url }}" target="_blank" rel="noopener">{{ fleet.url }}</a></p>
+      {% endif %}
+      <div class="form-row">
+        <div class="col-md-3 mb-2">
+          <input class="form-control" type="text" name="player" value="{{ player_draft }}" placeholder="{{ t.player }}" maxlength="100" required>
+        </div>
+        <div class="col-md-7 mb-2">
+          <input class="form-control" type="text" name="url" value="{{ url_draft }}" placeholder="{{ page.fleet_url_placeholder }}" required{% if replacing.is_some() %} autofocus onfocus="this.select()"{% endif %}>
+        </div>
+        <div class="col-md-2 mb-2">
+          {% if replacing.is_some() %}
+          <button class="btn btn-primary btn-block" type="submit">{{ t.replace }}</button>
+          <a class="btn btn-link btn-block" href="./">{{ t.cancel }}</a>
+          {% else %}
+          <button class="btn btn-primary btn-block" type="submit">{{ t.add }}</button>
+          {% endif %}
+        </div>
+      </div>
+    </form>
+
+    {% if !report.models.is_empty() %}
+    <div class="mt-4">
+      <table class="table table-sm">
+        <thead>
+          <tr><th></th><th class="num">{{ t.used }}</th><th class="num">{{ t.stock }}</th></tr>
+        </thead>
+        <tbody>
+          {% for total in report.totals %}
+          <tr{% if total.used > total.stock %} class="table-danger"{% endif %}>
+            <th>{{ kind_label(total.kind) }}</th>
+            <td class="num">{{ total.used }}</td>
+            <td class="num">{{ total.stock }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <table class="table table-sm table-hover">
+        <thead>
+          <tr><th>{{ t.miniature }}</th><th class="num">{{ t.used }}</th><th class="num">{{ t.stock }}</th><th class="num">{{ t.missing }}</th></tr>
+        </thead>
+        <tbody>
+          {% for usage in report.models %}
+          <tr{% if usage.shortfall() > 0 %} class="table-danger"{% endif %}>
+            <td>
+              {{ usage.name }}
+              {% if !usage.players.is_empty() %}<div class="shares">{{ t.used_by }} {{ shares(usage.players) }}</div>{% endif %}
+              {% if !usage.owners.is_empty() %}<div class="shares">{{ t.stock }}{{ t.colon }}{{ shares(usage.owners) }}</div>{% endif %}
+            </td>
+            <td class="num">{{ usage.used }}</td>
+            <td class="num">{{ usage.stock }}</td>
+            <td class="num">{% if usage.shortfall() > 0 %}{{ usage.shortfall() }}{% endif %}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    <h2>{{ t.stock }}</h2>
+    {% if game.stock.lines.is_empty() %}
+    <p>{{ t.no_stock }}</p>
+    {% else %}
+    <p>{{ game.stock.lines.len() }} {{ t.lines }}.</p>
+    {% endif %}
+    {% if !unmatched.is_empty() %}
+    <div class="alert alert-warning">
+      {{ t.unmatched }}
+      <ul class="mb-0">
+        {% for line in unmatched %}
+        <li>{{ line.name }} ({{ line.owner }}, {{ line.faction }}, {{ line.kind.sheet_label() }})</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <form action="stock" method="post" class="mb-5">
+      <div class="form-group">
+        <label for="stock-text">
+          {{ t.stock_help }}
+        </label>
+        <textarea id="stock-text" class="form-control" name="text" rows="12" required>{{ stock_draft }}</textarea>
+      </div>
+      <button class="btn btn-primary" type="submit">{{ t.save_stock }}</button>
+    </form>
+{% endblock %}
+
+{% block script %}
+  <script>document.getElementById("share-link").value = window.location.href;</script>
+{% endblock %}

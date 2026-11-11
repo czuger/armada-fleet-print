@@ -1,0 +1,114 @@
+//! End-to-end printing: fleet page → card images → layout → PDF.
+
+use std::collections::HashMap;
+use std::path::PathBuf;
+
+use reqwest::Client;
+
+use crate::card_image::CardImage;
+use crate::card_name::CardName;
+use crate::card_store::{CardStore, CardStoreError};
+use crate::fleet::{Fleet, FleetParseError};
+use crate::fleet_page::fetch_fleet_page;
+use crate::fleet_url::FleetUrl;
+use crate::http_client::build_http_client;
+use crate::lang::Lang;
+use crate::layout::{LayoutError, Orientation, lay_out};
+use crate::pdf::{RenderError, render};
+
+/// Produces the printable PDF of saved fleets.
+#[derive(Debug, Clone)]
+pub struct FleetPrinter {
+    client: Client,
+    cards: CardStore,
+}
+
+/// Error returned when a fleet cannot be printed.
+#[derive(Debug, thiserror::Error)]
+pub enum PrintError {
+    /// The fleet page could not be downloaded.
+    #[error("downloading fleet page failed")]
+    FetchPage(#[source] reqwest::Error),
+    /// The fleet page has no readable fleet.
+    #[error("reading fleet failed")]
+    Parse(#[from] FleetParseError),
+    /// A card image could not be obtained.
+    #[error("getting card images failed")]
+    Cards(#[from] CardStoreError),
+    /// A card image could not be decoded.
+    #[error("decoding card {card} failed")]
+    Decode {
+        /// Card whose image is corrupt.
+        card: CardName,
+        /// Underlying error.
+        #[source]
+        source: image::ImageError,
+    },
+    /// The layout step failed.
+    #[error("laying out fleet failed")]
+    Layout(#[from] LayoutError),
+    /// The PDF step failed.
+    #[error("rendering PDF failed")]
+    Render(#[from] RenderError),
+    /// The background rendering task panicked or was cancelled.
+    #[error("rendering task failed")]
+    Task(#[from] tokio::task::JoinError),
+}
+
+impl FleetPrinter {
+    /// Creates a printer caching card images in `cards_dir`.
+    ///
+    /// # Errors
+    /// Returns [`reqwest::Error`] if the HTTP client cannot be initialized.
+    pub fn new(cards_dir: PathBuf) -> Result<Self, reqwest::Error> {
+        let client = build_http_client()?;
+        let cards = CardStore::new(cards_dir, client.clone());
+        Ok(Self { client, cards })
+    }
+
+    /// Downloads the fleet at `url` and returns its PDF, with pages in `orientation` and the
+    /// footer in `lang`.
+    ///
+    /// # Errors
+    /// Returns [`PrintError`] describing the failed step.
+    pub async fn print(
+        &self,
+        url: &FleetUrl,
+        orientation: Orientation,
+        lang: Lang,
+    ) -> Result<Vec<u8>, PrintError> {
+        let html = fetch_fleet_page(&self.client, url)
+            .await
+            .map_err(PrintError::FetchPage)?;
+        let fleet = Fleet::from_page_html(&html)?;
+        let encoded = self.cards.load_all(&fleet.cards()).await?;
+        // Decoding and compressing images is CPU-bound, so keep it off the async workers.
+        tokio::task::spawn_blocking(move || render_fleet(&fleet, &encoded, orientation, lang))
+            .await?
+    }
+}
+
+/// Decodes the card images, lays out `fleet` and renders the PDF.
+fn render_fleet(
+    fleet: &Fleet,
+    encoded: &HashMap<CardName, Vec<u8>>,
+    orientation: Orientation,
+    lang: Lang,
+) -> Result<Vec<u8>, PrintError> {
+    let images = encoded
+        .iter()
+        .map(|(card, bytes)| {
+            let image = CardImage::decode(bytes).map_err(|source| PrintError::Decode {
+                card: card.clone(),
+                source,
+            })?;
+            Ok((card.clone(), image))
+        })
+        .collect::<Result<HashMap<_, _>, PrintError>>()?;
+    let aspect_ratios = images
+        .iter()
+        .map(|(card, image)| (card.clone(), image.aspect_ratio()))
+        .collect();
+    let plan = lay_out(fleet, &aspect_ratios, orientation, lang)?;
+    Ok(render(&plan, &images, &fleet.name)?)
+}

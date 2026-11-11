@@ -1,0 +1,36 @@
+# nginx snippet for this app — `location` blocks, meant to be included by the
+# server{} that already owns server_name and TLS, which includes every *.conf of
+# NGINX_CONF_DIR. It is uploaded to NGINX_CONF_DIR on the server by
+# `make setup` / `make nginx`, never by a deploy.
+#
+# Do not edit the deployed copy on the server: it is rendered from this template
+# and overwritten. The __PLACEHOLDERS__ come from deploy/config.sh, which also
+# renders the systemd unit, so the socket path and prefix cannot drift.
+
+# https://<host>__PREFIX__ (no trailing slash) would otherwise miss the block below.
+location = __PREFIX__ { return 301 __PREFIX__/; }
+
+location __PREFIX__/ {
+    # No port and no docker network: the app is a systemd user service on the host,
+    # listening on a Unix socket. The host directory holding it is bind-mounted into
+    # this container at __NGINX_SOCKET_DIR__ (see the proxy's docker-compose.yml).
+    #
+    # Unlike a container name, a socket path needs no resolver: `nginx -t` passes and
+    # nginx starts even before the first deploy or while the app is down — those
+    # requests just get a 502. And a restart of the app keeps the same path, so
+    # nginx has nothing to re-resolve after a deploy.
+    #
+    # The URI part ("/") after the socket path replaces the matched __PREFIX__/: the
+    # app is mounted at the root, and its links are relative so they stay under
+    # __PREFIX__ without the app knowing it.
+    proxy_pass http://unix:__NGINX_SOCKET_DIR__/__SOCKET_NAME__:/;
+
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+
+    # A print fetches the fleet page, then every card image not cached yet, during the
+    # request (30 s timeout per request app-side).
+    proxy_read_timeout 120s;
+}
