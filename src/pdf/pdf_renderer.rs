@@ -7,7 +7,7 @@ use pdf_writer::{Content, Filter, Finish, Name, Pdf, Rect, Ref, Str, TextStr};
 
 use crate::card_image::CardImage;
 use crate::card_name::CardName;
-use crate::layout::{DocumentPlan, Element, PAGE_HEIGHT, PAGE_WIDTH, Page, TextAlign};
+use crate::layout::{DocumentPlan, Element, Page, TextAlign};
 use crate::pdf::helvetica;
 
 const FONT_NAME: Name<'static> = Name(b"F1");
@@ -52,6 +52,7 @@ pub fn render(
         .base_font(Name(b"Helvetica"))
         .encoding_predefined(Name(b"WinAnsiEncoding"));
 
+    let (page_width, page_height) = plan.orientation.page_size();
     let x_objects = write_images(&mut pdf, &mut refs, plan, images)?;
     let page_ids: Vec<(Ref, Ref)> = plan
         .pages
@@ -60,7 +61,9 @@ pub fn render(
         .collect();
     pdf.pages(ids.tree)
         .kids(page_ids.iter().map(|&(page_id, _)| page_id))
-        .count(page_ids.len() as i32);
+        .count(page_ids.len() as i32)
+        // Inherited by every page.
+        .media_box(Rect::new(0.0, 0.0, page_width, page_height));
     for (page, (page_id, content_id)) in plan.pages.iter().zip(page_ids) {
         write_page(&mut pdf, page, &ids, (page_id, content_id), &x_objects)?;
     }
@@ -202,7 +205,6 @@ fn write_page(
     }
 
     let mut writer = pdf.page(page_id);
-    writer.media_box(Rect::new(0.0, 0.0, PAGE_WIDTH, PAGE_HEIGHT));
     writer.parent(ids.tree);
     writer.contents(content_id);
     let mut resources = writer.resources();

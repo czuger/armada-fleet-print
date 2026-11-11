@@ -126,6 +126,39 @@ impl GameService {
         added.map(|_| ()).ok_or(GameError::TooManyFleets)
     }
 
+    /// Replaces the player and link of the fleet `fleet_id`, after checking the new fleet
+    /// can be read.
+    ///
+    /// # Errors
+    /// Returns [`GameError`] if the name or fleet is invalid, [`GameError::FleetNotFound`] if
+    /// the fleet was removed, or a storage error.
+    pub async fn replace_fleet(
+        &self,
+        id: &GameId,
+        fleet_id: u32,
+        player: &str,
+        url: &str,
+    ) -> Result<(), GameError> {
+        let player = clean_name(player)?;
+        let url = FleetUrl::parse(url).map_err(FleetLoadError::from)?;
+        let game = self.store.load(id).await?;
+        if !game.fleets.iter().any(|fleet| fleet.id == fleet_id) {
+            return Err(GameError::FleetNotFound);
+        }
+        self.read_roster(&url).await?;
+        let url = url.to_string();
+        // Checked again by `replace_fleet`: the fleet may have been removed meanwhile.
+        let replaced = self
+            .store
+            .update(id, |game| game.replace_fleet(fleet_id, player, url))
+            .await?;
+        if replaced {
+            Ok(())
+        } else {
+            Err(GameError::FleetNotFound)
+        }
+    }
+
     /// Removes the fleet `fleet_id` from the game `id`.
     ///
     /// # Errors

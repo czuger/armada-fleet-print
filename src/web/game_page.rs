@@ -1,13 +1,13 @@
 //! Page of a game: results, fleets and stock.
 
 use askama::Template;
-use axum::http::StatusCode;
 
-use crate::fleet::FleetParseError;
 use crate::game::{
-    FigureKind, FleetLoadError, Game, GameError, GameReport, MAX_FLEETS, MAX_NAME_CHARS,
-    MAX_STOCK_LINES, Share, StockLine, StockParseError,
+    FigureKind, FleetLoadError, Game, GameFleet, GameId, GameReport, Share, StockLine,
 };
+use crate::lang::Lang;
+use crate::web::game_form_error::fleet_error;
+use crate::web::text::{GameText, PageText};
 
 /// Text typed in the page forms, shown again when a submission is rejected.
 #[derive(Debug, Default)]
@@ -18,46 +18,73 @@ pub(crate) struct Drafts {
     pub player: String,
     /// Link of the fleet to add.
     pub url: String,
+    /// Fleet the form replaces instead of adding one. When `player` and `url` are empty,
+    /// the form starts from that fleet.
+    pub replacing: Option<u32>,
 }
 
 #[derive(Template)]
 #[template(path = "game.html")]
 struct GamePage<'a> {
+    lang: Lang,
+    page: &'static PageText,
+    t: &'static GameText,
+    id: &'a GameId,
     game: &'a Game,
     report: &'a GameReport,
     unmatched: Vec<&'a StockLine>,
     error: Option<&'a str>,
     stock_draft: String,
+    /// Fleet being replaced, if it is still in the game.
+    replacing: Option<&'a GameFleet>,
     player_draft: &'a str,
     url_draft: &'a str,
 }
 
-/// Renders the page of `game`.
+/// Renders the page of `game` in `lang`.
 ///
 /// # Arguments
+/// * `id` - Identifier of the game, for the language switch.
 /// * `game` - The game.
 /// * `report` - Its results.
 /// * `drafts` - Text to put back in the forms.
 /// * `error` - Message explaining why the last submission was rejected.
+/// * `lang` - Language of the page.
 pub(crate) fn render_game_page(
+    id: &GameId,
     game: &Game,
     report: &GameReport,
     drafts: &Drafts,
     error: Option<&str>,
+    lang: Lang,
 ) -> Result<String, askama::Error> {
     let stock_draft = if drafts.stock.is_empty() && !game.stock.lines.is_empty() {
         game.stock.to_sheet()
     } else {
         drafts.stock.clone()
     };
+    let replacing = drafts
+        .replacing
+        .and_then(|id| game.fleets.iter().find(|fleet| fleet.id == id));
+    let (player_draft, url_draft) = match replacing {
+        Some(fleet) if drafts.player.is_empty() && drafts.url.is_empty() => {
+            (fleet.player.as_str(), fleet.url.as_str())
+        }
+        _ => (drafts.player.as_str(), drafts.url.as_str()),
+    };
     GamePage {
+        lang,
+        page: PageText::of(lang),
+        t: GameText::of(lang),
+        id,
         game,
         report,
         unmatched: game.stock.unmatched().collect(),
         error,
         stock_draft,
-        player_draft: &drafts.player,
-        url_draft: &drafts.url,
+        replacing,
+        player_draft,
+        url_draft,
     }
     .render()
 }
@@ -74,80 +101,25 @@ impl GamePage<'_> {
     }
 
     fn fleet_error(&self, err: &FleetLoadError) -> &'static str {
-        fleet_error(err)
+        fleet_error(err).text(self.lang)
     }
-}
 
-/// French explanation of why a fleet of the game cannot be read.
-pub(crate) fn fleet_error(err: &FleetLoadError) -> &'static str {
-    match err {
-        FleetLoadError::Url(_) => {
-            "Ce lien n'est pas une flotte de https://armada.ryankingston.com/. Copiez le lien \
-             complet de la flotte depuis la barre d'adresse."
-        }
-        FleetLoadError::Fetch(err) if err.status() == Some(reqwest::StatusCode::NOT_FOUND) => {
-            "Cette flotte n'existe pas. Vérifiez le lien."
-        }
-        FleetLoadError::Fetch(_) => {
-            "Impossible de récupérer la flotte sur https://armada.ryankingston.com/. Réessayez \
-             dans quelques instants."
-        }
-        FleetLoadError::Parse(FleetParseError::NoFleetData) => {
-            "Aucune flotte trouvée à cette adresse. Vérifiez que la flotte a bien été sauvegardée."
-        }
-        FleetLoadError::Parse(_) => "Les données de cette flotte sont illisibles.",
+    fn is_replacing(&self, fleet: &GameFleet) -> bool {
+        self.replacing
+            .is_some_and(|replacing| replacing.id == fleet.id)
     }
-}
 
-/// Status and French message for an error caused by what was typed in a game form, `None`
-/// for any other error.
-pub(crate) fn form_error(err: &GameError) -> Option<(StatusCode, String)> {
-    let invalid = |message: String| Some((StatusCode::UNPROCESSABLE_ENTITY, message));
-    match err {
-        GameError::Stock(err) => invalid(stock_error(err)),
-        GameError::InvalidName => invalid(format!(
-            "Indiquez un nom de joueur ({MAX_NAME_CHARS} caractères au plus)."
-        )),
-        GameError::TooManyFleets => invalid(format!(
-            "Une partie ne peut pas avoir plus de {MAX_FLEETS} flottes."
-        )),
-        GameError::Catalogue(_) => Some((
-            StatusCode::BAD_GATEWAY,
-            "Impossible de récupérer la liste des cartes sur https://armada.ryankingston.com/. \
-             Réessayez dans quelques instants."
-                .to_owned(),
-        )),
-        GameError::Fleet(err) => {
-            let status = match err {
-                FleetLoadError::Fetch(fetch) if fetch.status() != Some(StatusCode::NOT_FOUND) => {
-                    StatusCode::BAD_GATEWAY
-                }
-                FleetLoadError::Parse(FleetParseError::Json(_) | FleetParseError::Quantity(..)) => {
-                    StatusCode::BAD_GATEWAY
-                }
-                _ => StatusCode::UNPROCESSABLE_ENTITY,
-            };
-            Some((status, fleet_error(err).to_owned()))
+    fn kind_label(&self, kind: &FigureKind) -> &'static str {
+        match kind {
+            FigureKind::Ship => self.t.ships,
+            FigureKind::Squadron => self.t.squadrons,
         }
-        GameError::Store(_) | GameError::FleetNotFound => None,
     }
-}
 
-fn stock_error(err: &StockParseError) -> String {
-    match err {
-        StockParseError::Empty => "Le stock collé ne contient aucune figurine.".to_owned(),
-        StockParseError::TooManyLines => {
-            format!("Le stock ne peut pas dépasser {MAX_STOCK_LINES} lignes.")
-        }
-        StockParseError::Columns { line, found } => format!(
-            "Ligne {line} : 6 colonnes attendues (Owner, Faction, Figurine Name, Size, Type, Qty), \
-             {found} trouvée(s). Copiez les cellules depuis le tableur pour garder les tabulations."
-        ),
-        StockParseError::Kind { line, value } => {
-            format!("Ligne {line} : type « {value} » inconnu, Ship ou Squadron attendu.")
-        }
-        StockParseError::Quantity { line, value } => {
-            format!("Ligne {line} : quantité « {value} » invalide.")
-        }
+    /// Link of the language switch: through the app root, then back to this game. The page
+    /// is served at `games/<id>/` or, after a rejected form, at a sibling such as
+    /// `games/<id>/stock`, so `../../` is the app root either way.
+    fn switch_link(&self, to: Lang) -> String {
+        format!("../../lang?to={to}&game={}", self.id)
     }
 }

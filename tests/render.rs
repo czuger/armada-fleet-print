@@ -3,7 +3,8 @@ use std::collections::HashMap;
 use armada_fleet_print::card_image::CardImage;
 use armada_fleet_print::card_name::CardName;
 use armada_fleet_print::fleet::{Fleet, Ship, SquadronGroup};
-use armada_fleet_print::layout::lay_out;
+use armada_fleet_print::lang::Lang;
+use armada_fleet_print::layout::{Orientation, lay_out};
 use armada_fleet_print::pdf::{RenderError, render};
 
 fn card(name: &str) -> CardName {
@@ -55,11 +56,12 @@ fn renders_pdf_with_images_text_and_masks() {
         .iter()
         .map(|(card, image)| (card.clone(), image.aspect_ratio()))
         .collect();
-    let plan = lay_out(&fleet, &ratios).unwrap();
+    let plan = lay_out(&fleet, &ratios, Orientation::Portrait, Lang::Fr).unwrap();
 
     let pdf = render(&plan, &images, &fleet.name).unwrap();
 
     assert!(pdf.starts_with(b"%PDF-"));
+    assert!(contains(&pdf, "/MediaBox [0 0 612 792]"));
     assert!(contains(&pdf, "/Count 1"));
     assert!(contains(&pdf, "/Subtype /Image"));
     assert_eq!(pdf.windows(6).filter(|w| w == b"/SMask").count(), 1);
@@ -76,9 +78,22 @@ fn reports_missing_images() {
         .iter()
         .map(|(card, image)| (card.clone(), image.aspect_ratio()))
         .collect();
-    let plan = lay_out(&fleet, &ratios).unwrap();
+    let plan = lay_out(&fleet, &ratios, Orientation::Portrait, Lang::Fr).unwrap();
     images.remove(&card("up.png"));
 
     let err = render(&plan, &images, &fleet.name).unwrap_err();
     assert!(matches!(err, RenderError::MissingImage(name) if name.as_str() == "up.png"));
+}
+
+#[test]
+fn landscape_pages_are_wider_than_tall() {
+    let (fleet, images) = sample();
+    let ratios = images
+        .iter()
+        .map(|(card, image)| (card.clone(), image.aspect_ratio()))
+        .collect();
+    let plan = lay_out(&fleet, &ratios, Orientation::Landscape, Lang::Fr).unwrap();
+
+    let pdf = render(&plan, &images, &fleet.name).unwrap();
+    assert!(contains(&pdf, "/MediaBox [0 0 792 612]"));
 }

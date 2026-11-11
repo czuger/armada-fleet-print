@@ -3,15 +3,17 @@
 //! The game page lives at `games/<id>/`, with a trailing slash, so its forms and redirects
 //! can use paths relative to it and keep working under any URL prefix.
 
-use axum::Form;
-use axum::extract::{Path, State};
+use axum::extract::{Path, Query, State};
 use axum::http::StatusCode;
 use axum::response::{Html, IntoResponse, Redirect, Response};
+use axum::{Extension, Form};
 use serde::Deserialize;
 
 use crate::error_chain::error_chain;
 use crate::game::{GameError, GameId, GameService};
-use crate::web::game_page::{Drafts, form_error, render_game_page};
+use crate::lang::Lang;
+use crate::web::game_form_error::form_error;
+use crate::web::game_page::{Drafts, render_game_page};
 use crate::web::web_error::WebError;
 
 #[derive(Debug, Deserialize)]
@@ -24,6 +26,21 @@ pub(crate) struct CreateForm {
 pub(crate) struct StockForm {
     #[serde(default)]
     text: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ShowQuery {
+    /// Fleet whose replacement form to open.
+    replace: Option<u32>,
+}
+
+#[derive(Debug, Deserialize)]
+pub(crate) struct ReplaceForm {
+    fleet: u32,
+    #[serde(default)]
+    player: String,
+    #[serde(default)]
+    url: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -50,18 +67,26 @@ pub(crate) async fn add_trailing_slash(Path(id): Path<String>) -> Result<Redirec
     Ok(Redirect::permanent(&format!("{id}/")))
 }
 
-/// `GET games/<id>/`: shows the game with results computed from the current fleets.
+/// `GET games/<id>/[?replace=<fleet>]`: shows the game with results computed from the
+/// current fleets, and the form to replace `fleet` instead of adding one when asked.
 pub(crate) async fn show_game(
     State(games): State<GameService>,
+    Extension(lang): Extension<Lang>,
     Path(id): Path<String>,
+    Query(query): Query<ShowQuery>,
 ) -> Result<Html<String>, WebError> {
     let id: GameId = id.parse()?;
-    game_page(&games, &id, &Drafts::default(), None).await
+    let drafts = Drafts {
+        replacing: query.replace,
+        ..Drafts::default()
+    };
+    game_page(&games, &id, &drafts, None, lang).await
 }
 
 /// `POST games/<id>/stock`: replaces the stock.
 pub(crate) async fn replace_stock(
     State(games): State<GameService>,
+    Extension(lang): Extension<Lang>,
     Path(id): Path<String>,
     Form(form): Form<StockForm>,
 ) -> Result<Response, WebError> {
@@ -73,7 +98,7 @@ pub(crate) async fn replace_stock(
                 stock: form.text,
                 ..Drafts::default()
             };
-            rejected(&games, &id, err, &drafts).await
+            rejected(&games, &id, err, &drafts, lang).await
         }
     }
 }
@@ -81,6 +106,7 @@ pub(crate) async fn replace_stock(
 /// `POST games/<id>/fleets`: adds a fleet.
 pub(crate) async fn add_fleet(
     State(games): State<GameService>,
+    Extension(lang): Extension<Lang>,
     Path(id): Path<String>,
     Form(form): Form<FleetForm>,
 ) -> Result<Response, WebError> {
@@ -93,7 +119,33 @@ pub(crate) async fn add_fleet(
                 url: form.url,
                 ..Drafts::default()
             };
-            rejected(&games, &id, err, &drafts).await
+            rejected(&games, &id, err, &drafts, lang).await
+        }
+    }
+}
+
+/// `POST games/<id>/replace`: gives a fleet a new player and link. The route sits beside
+/// `fleets` so the page shown again after a rejection keeps working relative links.
+pub(crate) async fn replace_fleet(
+    State(games): State<GameService>,
+    Extension(lang): Extension<Lang>,
+    Path(id): Path<String>,
+    Form(form): Form<ReplaceForm>,
+) -> Result<Response, WebError> {
+    let id: GameId = id.parse()?;
+    match games
+        .replace_fleet(&id, form.fleet, &form.player, &form.url)
+        .await
+    {
+        Ok(()) => Ok(Redirect::to("./").into_response()),
+        Err(err) => {
+            let drafts = Drafts {
+                replacing: Some(form.fleet),
+                player: form.player,
+                url: form.url,
+                ..Drafts::default()
+            };
+            rejected(&games, &id, err, &drafts, lang).await
         }
     }
 }
@@ -118,12 +170,13 @@ async fn rejected(
     id: &GameId,
     err: GameError,
     drafts: &Drafts,
+    lang: Lang,
 ) -> Result<Response, WebError> {
-    let Some((status, message)) = form_error(&err) else {
+    let Some((status, message)) = form_error(&err, lang) else {
         return Err(err.into());
     };
     log_rejection(status, &err);
-    let page = game_page(games, id, drafts, Some(&message)).await?;
+    let page = game_page(games, id, drafts, Some(&message), lang).await?;
     Ok((status, page).into_response())
 }
 
@@ -140,8 +193,11 @@ async fn game_page(
     id: &GameId,
     drafts: &Drafts,
     error: Option<&str>,
+    lang: Lang,
 ) -> Result<Html<String>, WebError> {
     let game = games.load(id).await?;
     let report = games.report(&game).await;
-    Ok(Html(render_game_page(&game, &report, drafts, error)?))
+    Ok(Html(render_game_page(
+        id, &game, &report, drafts, error, lang,
+    )?))
 }

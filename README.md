@@ -4,14 +4,16 @@ Turns a fleet saved on [armada.ryankingston.com](https://armada.ryankingston.com
 
 ## Usage
 
-Go to https://apps.ieroe.com/armada/ and paste the link of a saved fleet, for example `https://armada.ryankingston.com/fleet/207536/`. The site is in French; an English version is available on request.
+Go to https://apps.ieroe.com/armada/ and paste the link of a saved fleet, for example `https://armada.ryankingston.com/fleet/207536/`. The site is in French and English: it follows the browser's language, and the FR | EN links at the top switch it.
 
-The PDF uses US Letter pages:
+The PDF uses US Letter pages, in portrait or landscape: pick one with the radio buttons next to « Envoyer ». The choice is kept in a cookie and also applies to the PDF buttons of the game pages. In portrait:
 
 - **Ships:** two per page, each with its upgrade cards alongside.
 - **Squadrons:** a 3×2 grid, with a badge showing how many of each card the fleet has.
 - **Objectives:** one row after the squadrons.
 - **Footer:** the fleet name, squadron and total points, and the page number.
+
+In landscape, ships are printed larger, the full height of the page, with their upgrade cards enlarged in the same proportion (and shrunk only when too many would not fit beside the ship). A ship with upgrades therefore takes a page of its own, and two ships without upgrades share one. Squadrons keep their size, four per line instead of three.
 
 ### Multi-player games
 
@@ -33,6 +35,9 @@ You need a Rust toolchain with edition 2024 support (1.85 or later).
 
 # One fleet to a PDF file, without the server
 cargo run -- render https://armada.ryankingston.com/fleet/207536/ -o flotte.pdf
+
+# The same, on landscape pages
+cargo run -- render https://armada.ryankingston.com/fleet/207536/ -o flotte.pdf --orientation landscape
 ```
 
 Card images are downloaded from the fleet builder the first time they are needed, then cached on disk.

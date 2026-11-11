@@ -65,6 +65,19 @@ impl Game {
         id
     }
 
+    /// Gives the fleet `id` a new player and link, keeping its place in the list.
+    ///
+    /// # Returns
+    /// Whether the fleet existed.
+    pub fn replace_fleet(&mut self, id: u32, player: String, url: String) -> bool {
+        let Some(fleet) = self.fleets.iter_mut().find(|fleet| fleet.id == id) else {
+            return false;
+        };
+        fleet.player = player;
+        fleet.url = url;
+        true
+    }
+
     /// Removes the fleet `id`.
     ///
     /// # Returns

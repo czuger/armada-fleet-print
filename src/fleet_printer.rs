@@ -12,7 +12,8 @@ use crate::fleet::{Fleet, FleetParseError};
 use crate::fleet_page::fetch_fleet_page;
 use crate::fleet_url::FleetUrl;
 use crate::http_client::build_http_client;
-use crate::layout::{LayoutError, lay_out};
+use crate::lang::Lang;
+use crate::layout::{LayoutError, Orientation, lay_out};
 use crate::pdf::{RenderError, render};
 
 /// Produces the printable PDF of saved fleets.
@@ -65,18 +66,25 @@ impl FleetPrinter {
         Ok(Self { client, cards })
     }
 
-    /// Downloads the fleet at `url` and returns its PDF.
+    /// Downloads the fleet at `url` and returns its PDF, with pages in `orientation` and the
+    /// footer in `lang`.
     ///
     /// # Errors
     /// Returns [`PrintError`] describing the failed step.
-    pub async fn print(&self, url: &FleetUrl) -> Result<Vec<u8>, PrintError> {
+    pub async fn print(
+        &self,
+        url: &FleetUrl,
+        orientation: Orientation,
+        lang: Lang,
+    ) -> Result<Vec<u8>, PrintError> {
         let html = fetch_fleet_page(&self.client, url)
             .await
             .map_err(PrintError::FetchPage)?;
         let fleet = Fleet::from_page_html(&html)?;
         let encoded = self.cards.load_all(&fleet.cards()).await?;
         // Decoding and compressing images is CPU-bound, so keep it off the async workers.
-        tokio::task::spawn_blocking(move || render_fleet(&fleet, &encoded)).await?
+        tokio::task::spawn_blocking(move || render_fleet(&fleet, &encoded, orientation, lang))
+            .await?
     }
 }
 
@@ -84,6 +92,8 @@ impl FleetPrinter {
 fn render_fleet(
     fleet: &Fleet,
     encoded: &HashMap<CardName, Vec<u8>>,
+    orientation: Orientation,
+    lang: Lang,
 ) -> Result<Vec<u8>, PrintError> {
     let images = encoded
         .iter()
@@ -99,6 +109,6 @@ fn render_fleet(
         .iter()
         .map(|(card, image)| (card.clone(), image.aspect_ratio()))
         .collect();
-    let plan = lay_out(fleet, &aspect_ratios)?;
+    let plan = lay_out(fleet, &aspect_ratios, orientation, lang)?;
     Ok(render(&plan, &images, &fleet.name)?)
 }
