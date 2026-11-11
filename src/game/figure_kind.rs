@@ -31,12 +31,4 @@ impl FigureKind {
             Self::Squadron => "Squadron",
         }
     }
-
-    /// Returns the French plural name shown to users.
-    pub fn plural_label(self) -> &'static str {
-        match self {
-            Self::Ship => "Vaisseaux",
-            Self::Squadron => "Escadrons",
-        }
-    }
 }

@@ -6,30 +6,22 @@ use std::mem;
 
 use crate::card_name::CardName;
 use crate::fleet::{Fleet, Ship, SquadronGroup};
-use crate::layout::document_plan::{
-    DocumentPlan, Element, PAGE_HEIGHT, PAGE_WIDTH, Page, TextAlign,
-};
+use crate::lang::Lang;
+use crate::layout::document_plan::{DocumentPlan, Element, Page, TextAlign};
+use crate::layout::orientation::Orientation;
 use crate::layout::shelf::Shelf;
+use crate::layout::upgrade_grid::{UPGRADE_GAP, UpgradeGrid};
 
 /// Margin on every side of the page (Prawn's default).
 const MARGIN: f32 = 36.0;
-/// Width of the area inside the margins.
-const CONTENT_WIDTH: f32 = PAGE_WIDTH - 2.0 * MARGIN;
-/// Height of the area inside the margins.
-const CONTENT_HEIGHT: f32 = PAGE_HEIGHT - 2.0 * MARGIN;
 
 const COLUMN_GAP: f32 = 3.0;
 const ROW_GAP: f32 = 10.0;
-/// As in the original, a line of three small cards runs 6 pt into the right margin.
-const SHELF_WIDTH: f32 = 3.0 * CARD_WIDTH + 2.0 * COLUMN_GAP;
 
+/// Width of ship cards in portrait.
 const SHIP_WIDTH: f32 = 200.0;
-const UPGRADE_LEFT: f32 = 210.0;
+/// Width of upgrade cards beside a [`SHIP_WIDTH`] ship; they scale with the ship.
 const UPGRADE_WIDTH: f32 = 100.0;
-const UPGRADE_HEIGHT: f32 = 150.0;
-const UPGRADE_STEP_X: f32 = 110.0;
-const UPGRADE_STEP_Y: f32 = 160.0;
-const UPGRADES_PER_ROW: usize = 3;
 
 /// Width of squadron and objective cards.
 const CARD_WIDTH: f32 = 180.0;
@@ -53,19 +45,65 @@ pub enum LayoutError {
     UnknownCard(CardName),
 }
 
+/// Size of the area inside the margins and how many small cards fit on one of its lines.
+#[derive(Debug, Clone, Copy)]
+struct Geometry {
+    orientation: Orientation,
+    content_width: f32,
+    content_height: f32,
+    /// Squadron or objective cards per line.
+    cards_per_line: usize,
+}
+
+impl Geometry {
+    fn new(orientation: Orientation) -> Self {
+        let (width, height) = orientation.page_size();
+        let content_width = width - 2.0 * MARGIN;
+        // Allow a few points of the right margin, as in the original, where three cards ran
+        // 6 pt into it in portrait; four cards run 9 pt into it in landscape.
+        let cards_per_line =
+            ((content_width + MARGIN / 2.0 + COLUMN_GAP) / (CARD_WIDTH + COLUMN_GAP)) as usize;
+        Self {
+            orientation,
+            content_width,
+            content_height: height - 2.0 * MARGIN,
+            cards_per_line,
+        }
+    }
+
+    /// Width of a line of the shelf: exactly `cards_per_line` small cards.
+    fn shelf_width(self) -> f32 {
+        let cards = self.cards_per_line as f32;
+        cards * CARD_WIDTH + (cards - 1.0) * COLUMN_GAP
+    }
+
+    /// Width and height of a ship card with height-to-width `ratio`: a fixed width in
+    /// portrait, the whole content height in landscape.
+    fn ship_size(self, ratio: f32) -> (f32, f32) {
+        match self.orientation {
+            Orientation::Portrait => (SHIP_WIDTH, SHIP_WIDTH * ratio),
+            Orientation::Landscape => (self.content_height / ratio, self.content_height),
+        }
+    }
+}
+
 /// Lays out every card of `fleet`, with a footer on each page.
 ///
 /// # Arguments
 /// * `fleet` - The fleet to print.
 /// * `aspect_ratios` - Height-to-width ratio of each card image of the fleet.
+/// * `orientation` - Orientation of the pages.
+/// * `lang` - Language of the footer.
 ///
 /// # Errors
 /// Returns [`LayoutError::UnknownCard`] if a card has no entry in `aspect_ratios`.
 pub fn lay_out(
     fleet: &Fleet,
     aspect_ratios: &HashMap<CardName, f32>,
+    orientation: Orientation,
+    lang: Lang,
 ) -> Result<DocumentPlan, LayoutError> {
-    let mut builder = PlanBuilder::new(aspect_ratios);
+    let mut builder = PlanBuilder::new(aspect_ratios, Geometry::new(orientation));
     for ship in &fleet.ships {
         builder.ship(ship)?;
     }
@@ -77,24 +115,31 @@ pub fn lay_out(
     for card in &fleet.objectives {
         builder.objective(card)?;
     }
-    Ok(builder.finish(&footer_label(fleet)))
+    Ok(builder.finish(&footer_label(fleet), lang))
 }
 
 /// Accumulates pages while walking through the fleet.
 struct PlanBuilder<'a> {
     aspect_ratios: &'a HashMap<CardName, f32>,
+    geometry: Geometry,
     done: Vec<Page>,
     current: Page,
     shelf: Shelf,
 }
 
 impl<'a> PlanBuilder<'a> {
-    fn new(aspect_ratios: &'a HashMap<CardName, f32>) -> Self {
+    fn new(aspect_ratios: &'a HashMap<CardName, f32>, geometry: Geometry) -> Self {
         Self {
             aspect_ratios,
+            geometry,
             done: Vec::new(),
             current: Page::default(),
-            shelf: Shelf::new(SHELF_WIDTH, CONTENT_HEIGHT, COLUMN_GAP, ROW_GAP),
+            shelf: Shelf::new(
+                geometry.shelf_width(),
+                geometry.content_height,
+                COLUMN_GAP,
+                ROW_GAP,
+            ),
         }
     }
 
@@ -117,23 +162,33 @@ impl<'a> PlanBuilder<'a> {
         (slot.left, slot.top)
     }
 
-    /// Lays out a ship with its upgrades in rows of three to its right.
+    /// Lays out a ship with its upgrades in rows to its right. A ship with upgrades takes a
+    /// whole line; its upgrades scale with it, and shrink only when they would not fit.
     fn ship(&mut self, ship: &Ship) -> Result<(), LayoutError> {
-        let height = self.height_at(&ship.card, SHIP_WIDTH)?;
-        let (block_width, upgrades_height) = upgrades_size(ship.upgrades.len());
-        let (left, top) = self.slot(block_width, height.max(upgrades_height));
-        self.place(&ship.card, left, top, SHIP_WIDTH, height);
+        let (width, height) = self.geometry.ship_size(self.aspect_ratio(&ship.card)?);
+        let upgrades_left = width + UPGRADE_GAP;
+        let shelf_width = self.geometry.shelf_width();
+        let grid = UpgradeGrid::fit(
+            ship.upgrades.len(),
+            UPGRADE_WIDTH * width / SHIP_WIDTH,
+            shelf_width - upgrades_left,
+            self.geometry.content_height,
+        );
+        let block_width = if ship.upgrades.is_empty() {
+            width
+        } else {
+            shelf_width
+        };
+        let (left, top) = self.slot(block_width, height.max(grid.height()));
+        self.place(&ship.card, left, top, width, height);
         for (index, upgrade) in ship.upgrades.iter().enumerate() {
-            let column = (index % UPGRADES_PER_ROW) as f32;
-            let row = (index / UPGRADES_PER_ROW) as f32;
-            let upgrade_left = left + UPGRADE_LEFT + column * UPGRADE_STEP_X;
-            let upgrade_top = top - row * UPGRADE_STEP_Y;
+            let (dx, dy) = grid.offset(index);
             self.place(
                 upgrade,
-                upgrade_left,
-                upgrade_top,
-                UPGRADE_WIDTH,
-                UPGRADE_HEIGHT,
+                left + upgrades_left + dx,
+                top - dy,
+                grid.card_width,
+                grid.card_height,
             );
         }
         Ok(())
@@ -165,9 +220,13 @@ impl<'a> PlanBuilder<'a> {
     }
 
     fn height_at(&self, card: &CardName, width: f32) -> Result<f32, LayoutError> {
+        self.aspect_ratio(card).map(|ratio| width * ratio)
+    }
+
+    fn aspect_ratio(&self, card: &CardName) -> Result<f32, LayoutError> {
         self.aspect_ratios
             .get(card)
-            .map(|ratio| width * ratio)
+            .copied()
             .ok_or_else(|| LayoutError::UnknownCard(card.clone()))
     }
 
@@ -183,7 +242,7 @@ impl<'a> PlanBuilder<'a> {
     }
 
     /// Drops empty pages and adds the footer to the remaining ones.
-    fn finish(mut self, label: &str) -> DocumentPlan {
+    fn finish(mut self, label: &str, lang: Lang) -> DocumentPlan {
         self.new_page();
         let mut pages = self.done;
         pages.retain(|page| !page.elements.is_empty());
@@ -191,24 +250,16 @@ impl<'a> PlanBuilder<'a> {
             pages.push(Page::default());
         }
         let count = pages.len();
+        let right = MARGIN + self.geometry.content_width;
         for (index, page) in pages.iter_mut().enumerate() {
-            page.elements.extend(footer(label, index + 1, count));
+            page.elements
+                .extend(footer(label, page_number(lang, index + 1, count), right));
         }
-        DocumentPlan { pages }
+        DocumentPlan {
+            orientation: self.geometry.orientation,
+            pages,
+        }
     }
-}
-
-/// Width of a ship block with `count` upgrades, and the height of its upgrade rows. A ship with
-/// upgrades takes a whole line.
-fn upgrades_size(count: usize) -> (f32, f32) {
-    if count == 0 {
-        return (SHIP_WIDTH, 0.0);
-    }
-    let rows = count.div_ceil(UPGRADES_PER_ROW) as f32;
-    (
-        SHELF_WIDTH,
-        rows * UPGRADE_STEP_Y - (UPGRADE_STEP_Y - UPGRADE_HEIGHT),
-    )
 }
 
 /// Fleet summary shown at the bottom left of every page.
@@ -219,8 +270,16 @@ fn footer_label(fleet: &Fleet) -> String {
     )
 }
 
-/// Footer elements of page `number` out of `count`.
-fn footer(label: &str, number: usize, count: usize) -> [Element; 2] {
+/// "page 2 sur 3", in `lang`.
+fn page_number(lang: Lang, number: usize, count: usize) -> String {
+    match lang {
+        Lang::Fr => format!("page {number} sur {count}"),
+        Lang::En => format!("page {number} of {count}"),
+    }
+}
+
+/// Footer elements: `label` on the left, `page_number` ending at `right`.
+fn footer(label: &str, page_number: String, right: f32) -> [Element; 2] {
     let text = |text: String, x: f32, align: TextAlign| Element::Text {
         text,
         x,
@@ -230,10 +289,6 @@ fn footer(label: &str, number: usize, count: usize) -> [Element; 2] {
     };
     [
         text(label.to_owned(), MARGIN, TextAlign::Left),
-        text(
-            format!("page {number} sur {count}"),
-            MARGIN + CONTENT_WIDTH,
-            TextAlign::Right,
-        ),
+        text(page_number, right, TextAlign::Right),
     ]
 }

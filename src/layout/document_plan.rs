@@ -1,15 +1,13 @@
 //! What to draw on each page. Coordinates are PDF points from the bottom-left corner of the page.
 
 use crate::card_name::CardName;
-
-/// Page width in points (US Letter, as in the original Prawn version).
-pub const PAGE_WIDTH: f32 = 612.0;
-/// Page height in points (US Letter).
-pub const PAGE_HEIGHT: f32 = 792.0;
+use crate::layout::orientation::Orientation;
 
 /// Every page of the printed document, in order.
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct DocumentPlan {
+    /// Orientation of every page, which gives their size.
+    pub orientation: Orientation,
     /// The pages, never empty once produced by [`crate::layout::lay_out`].
     pub pages: Vec<Page>,
 }

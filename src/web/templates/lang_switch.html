@@ -1,0 +1,7 @@
+    <nav class="lang-switch small">
+      {% if lang == Lang::Fr -%}
+      <strong>FR</strong> | <a href="{{ switch_link(Lang::En) }}" hreflang="en" lang="en" title="English">EN</a>
+      {%- else -%}
+      <a href="{{ switch_link(Lang::Fr) }}" hreflang="fr" lang="fr" title="Français">FR</a> | <strong>EN</strong>
+      {%- endif %}
+    </nav>

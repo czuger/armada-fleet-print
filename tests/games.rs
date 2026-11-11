@@ -247,6 +247,25 @@ fn report_names_unstocked_models_from_catalogue() {
     assert!(report.duplicates.is_empty());
 }
 
+#[test]
+fn replacing_a_fleet_keeps_its_place() {
+    let mut game = Game::new("Campagne".to_owned());
+    let first = game.add_fleet("Alice".to_owned(), "a".to_owned());
+    let second = game.add_fleet("Bob".to_owned(), "b".to_owned());
+
+    assert!(game.replace_fleet(first, "Carol".to_owned(), "c".to_owned()));
+    assert_eq!(
+        (
+            game.fleets[0].id,
+            game.fleets[0].player.as_str(),
+            game.fleets[0].url.as_str()
+        ),
+        (first, "Carol", "c")
+    );
+    assert_eq!(game.fleets[1].id, second);
+    assert!(!game.replace_fleet(99, "Dan".to_owned(), "d".to_owned()));
+}
+
 #[tokio::test]
 async fn store_saves_and_updates_games() {
     let dir = temp_dir();

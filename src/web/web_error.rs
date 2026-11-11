@@ -1,17 +1,14 @@
-//! Errors returned by request handlers, answered with a French error page.
+//! Errors returned by request handlers, answered with an error page in the request language.
 
 use axum::http::StatusCode;
-use axum::response::{Html, IntoResponse, Response};
+use axum::response::{IntoResponse, Response};
 
 use crate::error_chain::error_chain;
 use crate::fleet::FleetParseError;
 use crate::fleet_printer::PrintError;
 use crate::fleet_url::FleetUrlError;
 use crate::game::{GameError, GameIdError, GameStoreError};
-use crate::web::pages::error_page;
-
-/// Asked for when a game is created without a usable name; states `MAX_NAME_CHARS`.
-const GAME_NAME_MESSAGE: &str = "Donnez un nom à la partie (100 caractères au plus).";
+use crate::web::text::ErrorMessage;
 
 /// Error answered to a web request.
 #[derive(Debug, thiserror::Error)]
@@ -57,39 +54,34 @@ impl WebError {
         }
     }
 
-    fn user_message(&self) -> &'static str {
+    fn message(&self) -> ErrorMessage {
         match self {
-            Self::InvalidUrl(_) => {
-                "Ce lien n'est pas une flotte de https://armada.ryankingston.com/. Copiez le lien \
-                 complet de la flotte depuis la barre d'adresse."
-            }
+            Self::InvalidUrl(_) => ErrorMessage::InvalidFleetLink,
             Self::Print(PrintError::FetchPage(err))
                 if err.status() == Some(StatusCode::NOT_FOUND) =>
             {
-                "Cette flotte n'existe pas. Vérifiez le lien."
+                ErrorMessage::FleetNotFound
             }
-            Self::Print(PrintError::FetchPage(_)) => {
-                "Impossible de récupérer la flotte sur https://armada.ryankingston.com/. Réessayez \
-                 dans quelques instants."
-            }
+            Self::Print(PrintError::FetchPage(_)) => ErrorMessage::FleetUnreachable,
             Self::Print(PrintError::Parse(FleetParseError::NoFleetData)) => {
-                "Aucune flotte trouvée à cette adresse. Vérifiez que la flotte a bien été sauvegardée."
+                ErrorMessage::NoFleetData
             }
-            Self::Print(PrintError::Parse(_)) => "Les données de cette flotte sont illisibles.",
-            Self::Print(PrintError::Cards(_)) => {
-                "Impossible de télécharger les images des cartes. Réessayez dans quelques instants."
-            }
-            Self::Print(_) => "Erreur interne lors de la création du PDF.",
+            Self::Print(PrintError::Parse(_)) => ErrorMessage::UnreadableFleet,
+            Self::Print(PrintError::Cards(_)) => ErrorMessage::CardsUnavailable,
+            Self::Print(_) => ErrorMessage::PdfFailed,
             Self::InvalidGameId(_) | Self::Game(GameError::Store(GameStoreError::NotFound)) => {
-                "Cette partie n'existe pas. Vérifiez le lien."
+                ErrorMessage::GameNotFound
             }
-            Self::Game(GameError::InvalidName) => GAME_NAME_MESSAGE,
-            Self::Game(_) | Self::Template(_) => "Erreur interne lors du traitement de la partie.",
+            Self::Game(GameError::InvalidName) => ErrorMessage::GameName,
+            Self::Game(_) => ErrorMessage::GameFailed,
+            Self::Template(_) => ErrorMessage::Internal,
         }
     }
 }
 
 impl IntoResponse for WebError {
+    /// Logs the error and answers its status, leaving the page to the `localize` middleware,
+    /// which knows the language: the response carries the [`ErrorMessage`] to show.
     fn into_response(self) -> Response {
         let status = self.status();
         if status.is_server_error() {
@@ -97,17 +89,8 @@ impl IntoResponse for WebError {
         } else {
             tracing::warn!("{}", error_chain(&self));
         }
-        (status, Html(error_page(self.user_message()))).into_response()
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::game::MAX_NAME_CHARS;
-
-    #[test]
-    fn game_name_message_states_the_limit() {
-        assert!(GAME_NAME_MESSAGE.contains(&MAX_NAME_CHARS.to_string()));
+        let mut response = status.into_response();
+        response.extensions_mut().insert(self.message());
+        response
     }
 }

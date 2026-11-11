@@ -15,6 +15,7 @@ pub mod fleet_printer;
 pub mod fleet_url;
 pub mod game;
 pub mod http_client;
+pub mod lang;
 pub mod layout;
 pub mod pdf;
 pub mod web;

@@ -1,27 +1,23 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230b1d3a'/%3E%3Ccircle cx='7' cy='7' r='1' fill='%23fff'/%3E%3Ccircle cx='27' cy='25' r='1' fill='%23fff'/%3E%3Ccircle cx='14' cy='4' r='.7' fill='%23fff'/%3E%3Cpath d='M4 28L19 5L24 11Z' fill='%23f1f4f8'/%3E%3Cpath d='M4 28L24 11L29 17Z' fill='%239aa8b8'/%3E%3Cpath d='M19 5L29 17' stroke='%235cc8ff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
-  <title>{{ game.name }} - ArmadaFleetPrint</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-  <style>
-    h1 { text-align: center; margin: 20px 0 30px; }
+{% extends "base.html" %}
+
+{% block title %}{{ game.name }} - ArmadaFleetPrint{% endblock %}
+
+{% block style %}
+    h1 { margin: 20px 0 30px; }
     h2 { margin-top: 40px; }
     td.num, th.num { text-align: right; white-space: nowrap; }
     .shares { color: #6c757d; font-size: 0.85em; }
     textarea { font-family: monospace; font-size: 0.85em; }
     .inline { display: inline; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <p><a href="../../">&larr; Impression de flotte</a></p>
+{% endblock %}
+
+{% block content %}
+    {% include "lang_switch.html" %}
+    <p><a href="../../">{{ t.home_link }}</a></p>
     <h1>{{ game.name }}</h1>
 
     <div class="alert alert-info">
-      Cette partie n'est accessible que par son lien. Toute personne qui l'a peut la consulter et la modifier.
+      {{ t.link_notice }}
       <input id="share-link" class="form-control mt-2" type="text" readonly onclick="this.select()">
     </div>
 
@@ -29,45 +25,45 @@
     <div class="alert alert-danger">{{ message }}</div>
     {% endif %}
 
-    <h2>Résultat</h2>
+    <h2>{{ t.results }}</h2>
     {% if report.models.is_empty() %}
-    <p>Ajoutez un stock et des flottes pour voir le résultat.</p>
+    <p>{{ t.results_empty }}</p>
     {% else %}
       {% if report.has_shortfall() %}
-      <div class="alert alert-danger">Il manque des figurines dans le stock (lignes en rouge).</div>
+      <div class="alert alert-danger">{{ t.shortfall }}</div>
       {% else %}
-      <div class="alert alert-success">Le stock suffit pour toutes les flottes.</div>
+      <div class="alert alert-success">{{ t.enough }}</div>
       {% endif %}
 
       {% if report.duplicates.is_empty() %}
-      <div class="alert alert-success">Aucune carte unique en double.</div>
+      <div class="alert alert-success">{{ t.no_duplicates }}</div>
       {% else %}
       <div class="alert alert-danger">
-        Cartes uniques en double :
+        {{ t.duplicates }}
         <ul class="mb-0">
           {% for card in report.duplicates %}
-          <li><strong>{{ card.name }}</strong> : {{ card.players.join(", ") }}</li>
+          <li><strong>{{ card.name }}</strong>{{ t.colon }}{{ card.players.join(", ") }}</li>
           {% endfor %}
         </ul>
       </div>
       {% endif %}
     {% endif %}
 
-    <h2>Flottes</h2>
+    <h2>{{ t.fleets }}</h2>
     {% if report.fleets.is_empty() %}
-    <p>Aucune flotte pour l'instant.</p>
+    <p>{{ t.no_fleets }}</p>
     {% else %}
     <table class="table table-sm">
       <thead>
-        <tr><th>Joueur</th><th>Flotte</th><th class="num">Points</th><th class="num">Vaisseaux</th><th class="num">Escadrons</th><th></th></tr>
+        <tr><th>{{ t.player }}</th><th>{{ t.fleet }}</th><th class="num">{{ t.points }}</th><th class="num">{{ t.ships }}</th><th class="num">{{ t.squadrons }}</th><th></th></tr>
       </thead>
       <tbody>
         {% for result in report.fleets %}
-        <tr>
+        <tr{% if is_replacing(result.fleet) %} class="table-active"{% endif %}>
           <td>{{ result.fleet.player }}</td>
           {% match result.roster %}
           {% when Ok(roster) %}
-          <td><a href="{{ result.fleet.url }}" target="_blank" rel="noopener">{% if roster.name.is_empty() %}(sans nom){% else %}{{ roster.name }}{% endif %}</a></td>
+          <td><a href="{{ result.fleet.url }}" target="_blank" rel="noopener">{% if roster.name.is_empty() %}{{ t.unnamed }}{% else %}{{ roster.name }}{% endif %}</a></td>
           <td class="num">{{ roster.total_points }}</td>
           <td class="num">{{ roster.figure_total(FigureKind::Ship) }}</td>
           <td class="num">{{ roster.figure_total(FigureKind::Squadron) }}</td>
@@ -82,8 +78,9 @@
               <input type="hidden" name="url" value="{{ result.fleet.url }}">
               <button class="btn btn-sm btn-outline-secondary" type="submit">PDF</button>
             </form>
-            <form class="inline" action="fleets/{{ result.fleet.id }}/delete" method="post" onsubmit="return confirm('Retirer cette flotte de la partie ?')">
-              <button class="btn btn-sm btn-outline-danger" type="submit">Retirer</button>
+            <a class="btn btn-sm btn-outline-primary" href="./?replace={{ result.fleet.id }}#fleet-form">{{ t.replace }}</a>
+            <form class="inline" action="fleets/{{ result.fleet.id }}/delete" method="post" onsubmit="return confirm('{{ t.remove_confirm }}')">
+              <button class="btn btn-sm btn-outline-danger" type="submit">{{ t.remove }}</button>
             </form>
           </td>
         </tr>
@@ -92,16 +89,25 @@
     </table>
     {% endif %}
 
-    <form action="fleets" method="post">
+    <form id="fleet-form" action="{% if replacing.is_some() %}replace{% else %}fleets{% endif %}" method="post">
+      {% if let Some(fleet) = replacing %}
+      <input type="hidden" name="fleet" value="{{ fleet.id }}">
+      <p class="mb-2"><strong>{{ t.replacing }}</strong>{{ t.colon }}{{ fleet.player }}, <a href="{{ fleet.url }}" target="_blank" rel="noopener">{{ fleet.url }}</a></p>
+      {% endif %}
       <div class="form-row">
         <div class="col-md-3 mb-2">
-          <input class="form-control" type="text" name="player" value="{{ player_draft }}" placeholder="Joueur" maxlength="100" required>
+          <input class="form-control" type="text" name="player" value="{{ player_draft }}" placeholder="{{ t.player }}" maxlength="100" required>
         </div>
         <div class="col-md-7 mb-2">
-          <input class="form-control" type="text" name="url" value="{{ url_draft }}" placeholder="https://armada.ryankingston.com/fleet/&lt;numéro&gt;/" required>
+          <input class="form-control" type="text" name="url" value="{{ url_draft }}" placeholder="{{ page.fleet_url_placeholder }}" required{% if replacing.is_some() %} autofocus onfocus="this.select()"{% endif %}>
         </div>
         <div class="col-md-2 mb-2">
-          <button class="btn btn-primary btn-block" type="submit">Ajouter</button>
+          {% if replacing.is_some() %}
+          <button class="btn btn-primary btn-block" type="submit">{{ t.replace }}</button>
+          <a class="btn btn-link btn-block" href="./">{{ t.cancel }}</a>
+          {% else %}
+          <button class="btn btn-primary btn-block" type="submit">{{ t.add }}</button>
+          {% endif %}
         </div>
       </div>
     </form>
@@ -110,12 +116,12 @@
     <div class="mt-4">
       <table class="table table-sm">
         <thead>
-          <tr><th></th><th class="num">Utilisées</th><th class="num">Stock</th></tr>
+          <tr><th></th><th class="num">{{ t.used }}</th><th class="num">{{ t.stock }}</th></tr>
         </thead>
         <tbody>
           {% for total in report.totals %}
           <tr{% if total.used > total.stock %} class="table-danger"{% endif %}>
-            <th>{{ total.kind.plural_label() }}</th>
+            <th>{{ kind_label(total.kind) }}</th>
             <td class="num">{{ total.used }}</td>
             <td class="num">{{ total.stock }}</td>
           </tr>
@@ -125,15 +131,15 @@
 
       <table class="table table-sm table-hover">
         <thead>
-          <tr><th>Figurine</th><th class="num">Utilisées</th><th class="num">Stock</th><th class="num">Manque</th></tr>
+          <tr><th>{{ t.miniature }}</th><th class="num">{{ t.used }}</th><th class="num">{{ t.stock }}</th><th class="num">{{ t.missing }}</th></tr>
         </thead>
         <tbody>
           {% for usage in report.models %}
           <tr{% if usage.shortfall() > 0 %} class="table-danger"{% endif %}>
             <td>
               {{ usage.name }}
-              {% if !usage.players.is_empty() %}<div class="shares">Utilisées par {{ shares(usage.players) }}</div>{% endif %}
-              {% if !usage.owners.is_empty() %}<div class="shares">Stock : {{ shares(usage.owners) }}</div>{% endif %}
+              {% if !usage.players.is_empty() %}<div class="shares">{{ t.used_by }} {{ shares(usage.players) }}</div>{% endif %}
+              {% if !usage.owners.is_empty() %}<div class="shares">{{ t.stock }}{{ t.colon }}{{ shares(usage.owners) }}</div>{% endif %}
             </td>
             <td class="num">{{ usage.used }}</td>
             <td class="num">{{ usage.stock }}</td>
@@ -145,15 +151,15 @@
     </div>
     {% endif %}
 
-    <h2>Stock</h2>
+    <h2>{{ t.stock }}</h2>
     {% if game.stock.lines.is_empty() %}
-    <p>Aucun stock pour l'instant.</p>
+    <p>{{ t.no_stock }}</p>
     {% else %}
-    <p>{{ game.stock.lines.len() }} lignes.</p>
+    <p>{{ game.stock.lines.len() }} {{ t.lines }}.</p>
     {% endif %}
     {% if !unmatched.is_empty() %}
     <div class="alert alert-warning">
-      Figurines non reconnues, ignorées dans le résultat (corrigez leur nom ou leur type) :
+      {{ t.unmatched }}
       <ul class="mb-0">
         {% for line in unmatched %}
         <li>{{ line.name }} ({{ line.owner }}, {{ line.faction }}, {{ line.kind.sheet_label() }})</li>
@@ -165,15 +171,14 @@
     <form action="stock" method="post" class="mb-5">
       <div class="form-group">
         <label for="stock-text">
-          Copiez les lignes du tableur (Google Sheets) avec les colonnes Owner, Faction, Figurine Name,
-          Size, Type et Qty, puis collez-les ici. La ligne d'en-tête est facultative. Le nouveau
-          stock remplace l'ancien.
+          {{ t.stock_help }}
         </label>
         <textarea id="stock-text" class="form-control" name="text" rows="12" required>{{ stock_draft }}</textarea>
       </div>
-      <button class="btn btn-primary" type="submit">Enregistrer le stock</button>
+      <button class="btn btn-primary" type="submit">{{ t.save_stock }}</button>
     </form>
-  </div>
+{% endblock %}
+
+{% block script %}
   <script>document.getElementById("share-link").value = window.location.href;</script>
-</body>
-</html>
+{% endblock %}

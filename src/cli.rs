@@ -11,6 +11,8 @@ use crate::fleet_printer::{FleetPrinter, PrintError};
 use crate::fleet_url::{FleetUrl, FleetUrlError};
 use crate::game::GameService;
 use crate::http_client::build_http_client;
+use crate::lang::Lang;
+use crate::layout::Orientation;
 use crate::web::{AppState, serve};
 
 /// Command-line arguments.
@@ -78,6 +80,16 @@ pub enum Command {
             help = "Fichier PDF à écrire"
         )]
         output: PathBuf,
+        /// Page orientation: portrait or landscape.
+        #[arg(
+            long,
+            default_value = "portrait",
+            help = "Orientation des pages : portrait ou landscape (paysage)"
+        )]
+        orientation: Orientation,
+        /// Language of the page footer: fr or en.
+        #[arg(long, default_value = "fr", help = "Langue du pied de page : fr ou en")]
+        lang: Lang,
     },
     /// Manages the local card database.
     #[command(about = "Gère la base locale des cartes")]
@@ -150,9 +162,16 @@ impl Cli {
                 };
                 serve(bind, socket.as_deref(), state).await?;
             }
-            Command::Render { url, output } => {
+            Command::Render {
+                url,
+                output,
+                orientation,
+                lang,
+            } => {
                 let printer = FleetPrinter::new(self.cards_dir).map_err(CliError::Client)?;
-                let pdf = printer.print(&FleetUrl::parse(&url)?).await?;
+                let pdf = printer
+                    .print(&FleetUrl::parse(&url)?, orientation, lang)
+                    .await?;
                 tokio::fs::write(&output, pdf).await?;
                 println!("PDF écrit dans {}", output.display());
             }
