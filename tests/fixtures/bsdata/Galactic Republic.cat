@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<catalogue id="aa80-2c3e-6e78-52b4" name="Galactic Republic" revision="14" battleScribeVersion="2.03" library="false" gameSystemId="4007-48b0-a016-7a8e" gameSystemRevision="41" xmlns="http://www.battlescribe.net/schema/catalogueSchema">
+  <selectionEntries>
+    <selectionEntry id="1da0-310a-d8fc-25ea" name="Acclamator I-class Assault Ship" hidden="false" collective="false" import="true" type="model">
+      <profiles>
+        <profile id="4995-5f14-91bc-b472" name="Acclamator I-class Assault Ship" hidden="false" typeId="e72b-10bf-c14e-b3a8" typeName="1.1 Ships">
+          <modifiers>
+            <modifier type="set" field="5ba4-e836-287d-1b42" value="Officer, Weapons Team, Fleet Command, Offensive Retrofit, Offensive Retrofit, Ordnance, Turbolasers">
+              <conditions>
+                <condition field="selections" scope="1da0-310a-d8fc-25ea" value="1.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" childId="e488-7f0c-2835-cb55" type="atLeast"/>
+              </conditions>
+            </modifier>
+          </modifiers>
+          <characteristics>
+            <characteristic name="Hull" typeId="dce4-e1e2-4600-db77">7</characteristic>
+            <characteristic name="Anti-Squadron Value" typeId="4691-4ce0-0e70-7711">2 Black</characteristic>
+            <characteristic name="Command" typeId="1d2d-071c-feaa-7f6e">3</characteristic>
+            <characteristic name="Squadron" typeId="b7a0-8944-9c2a-ca69">3</characteristic>
+            <characteristic name="Engineering" typeId="6069-def8-10bd-ab4b">4</characteristic>
+            <characteristic name="Defense Tokens" typeId="f211-7be9-035b-a0cf">Brace, Redirect, Salvo</characteristic>
+            <characteristic name="Front Firing Arc" typeId="8d51-161b-6a35-8c8c">3 Red, 2 Black</characteristic>
+            <characteristic name="Left Firing Arc" typeId="b4b4-b590-eb56-726f">2 Red, 1 Black</characteristic>
+            <characteristic name="Right Firing Arc" typeId="748c-7972-54e2-1bd1">2 Red, 1 Black</characteristic>
+            <characteristic name="Rear Firing Arc" typeId="2949-52b4-c630-9e14">1 Red, 1 Black</characteristic>
+            <characteristic name="Front Shield Value" typeId="b626-c94b-bb41-4893">4</characteristic>
+            <characteristic name="Left Shield Value" typeId="634e-fa2b-63b6-bef2">2</characteristic>
+            <characteristic name="Right Shield Value" typeId="590e-4eb6-d942-884d">2</characteristic>
+            <characteristic name="Rear Shield Value" typeId="5753-1a48-06df-40af">2</characteristic>
+            <characteristic name="Upgrade Bar" typeId="5ba4-e836-287d-1b42">Officer, Weapons Team, Offensive Retrofit, Offensive Retrofit, Ordnance, Turbolasers</characteristic>
+            <characteristic name="Keywords" typeId="44b7-80c3-1f4f-8b7c">Clone.  Transport.</characteristic>
+            <characteristic name="Max Speed" typeId="b650-9c38-4a65-44a7">3</characteristic>
+          </characteristics>
+        </profile>
+        <profile id="7f7d-19f5-5101-4d7a" name=" " hidden="false" typeId="12ae-fc05-5eb2-1c26" typeName="1.9 Speed Chart">
+          <characteristics>
+            <characteristic name="1" typeId="9c2c-0baf-d44a-434f"/>
+            <characteristic name="2" typeId="6d2c-60fc-6858-4905"/>
+            <characteristic name="3" typeId="a62c-fc4f-35ca-94d7"/>
+            <characteristic name="4" typeId="5e3b-e972-3249-2522"/>
+            <characteristic name="|" typeId="953d-9875-c8ab-40ec">|</characteristic>
+          </characteristics>
+        </profile>
+        <profile id="5f24-8589-0b4d-2bdf" name="  " hidden="false" typeId="12ae-fc05-5eb2-1c26" typeName="1.9 Speed Chart">
+          <characteristics>
+            <characteristic name="1" typeId="9c2c-0baf-d44a-434f"/>
+            <characteristic name="2" typeId="6d2c-60fc-6858-4905"/>
+            <characteristic name="3" typeId="a62c-fc4f-35ca-94d7">-</characteristic>
+            <characteristic name="4" typeId="5e3b-e972-3249-2522"/>
+            <characteristic name="|" typeId="953d-9875-c8ab-40ec">|</characteristic>
+          </characteristics>
+        </profile>
+        <profile id="a3bf-3c7c-d8ae-309e" name="   " hidden="false" typeId="12ae-fc05-5eb2-1c26" typeName="1.9 Speed Chart">
+          <characteristics>
+            <characteristic name="1" typeId="9c2c-0baf-d44a-434f"/>
+            <characteristic name="2" typeId="6d2c-60fc-6858-4905">-</characteristic>
+            <characteristic name="3" typeId="a62c-fc4f-35ca-94d7">1</characteristic>
+            <characteristic name="4" typeId="5e3b-e972-3249-2522"/>
+            <characteristic name="|" typeId="953d-9875-c8ab-40ec">|</characteristic>
+          </characteristics>
+        </profile>
+        <profile id="3749-79d7-303e-cac1" name="    " hidden="false" typeId="12ae-fc05-5eb2-1c26" typeName="1.9 Speed Chart">
+          <characteristics>
+            <characteristic name="1" typeId="9c2c-0baf-d44a-434f">1</characteristic>
+            <characteristic name="2" typeId="6d2c-60fc-6858-4905">1</characteristic>
+            <characteristic name="3" typeId="a62c-fc4f-35ca-94d7">-</characteristic>
+            <characteristic name="4" typeId="5e3b-e972-3249-2522"/>
+            <characteristic name="|" typeId="953d-9875-c8ab-40ec">|</characteristic>
+          </characteristics>
+        </profile>
+      </profiles>
+      <categoryLinks>
+        <categoryLink id="d9bf-b1ce-f481-c6fa" name="New CategoryLink" hidden="false" targetId="034d-5d10-2acd-a23f" primary="false"/>
+        <categoryLink id="7dc7-13ba-4852-8c59" name="Acclamator-class Assault Ship" hidden="false" targetId="8c65-1e25-1a94-a65f" primary="true"/>
+      </categoryLinks>
+      <entryLinks>
+        <entryLink id="4e2e-b42a-c183-766d" name="Commander" hidden="false" collective="false" import="true" targetId="d77d-f98a-9b86-934a" type="selectionEntryGroup"/>
+        <entryLink id="2d4b-c7d9-f147-0819" name="Turbolasers" hidden="false" collective="false" import="true" targetId="919f-0faf-d84f-79ff" type="selectionEntryGroup"/>
+        <entryLink id="26bc-f288-3938-86bb" name="Officer" hidden="false" collective="false" import="true" targetId="10d5-12af-b773-cd45" type="selectionEntryGroup"/>
+        <entryLink id="75f9-bc63-7cee-4645" name="Weapons Team" hidden="false" collective="false" import="true" targetId="baa5-7a1e-92ea-a312" type="selectionEntryGroup"/>
+        <entryLink id="1a62-1eb9-f59b-2378" name="Offensive Retrofit" hidden="false" collective="false" import="true" targetId="0a55-2f8b-aff3-154e" type="selectionEntryGroup">
+          <modifiers>
+            <modifier type="increment" field="maxSelections" value="1.0"/>
+          </modifiers>
+        </entryLink>
+        <entryLink id="9345-752f-2f28-489e" name="Ordnance" hidden="false" collective="false" import="true" targetId="23f2-ace7-4294-434e" type="selectionEntryGroup"/>
+        <entryLink id="cdc8-32f2-4343-9246" name="Title - Acclamator-class Assault Ship" hidden="false" collective="false" import="true" targetId="c70a-0bc0-aa39-3562" type="selectionEntryGroup"/>
+        <entryLink id="9ff3-8595-195e-a968" name="Fleet Command" hidden="false" collective="false" import="true" targetId="69c5-17fb-4def-4b65" type="selectionEntryGroup">
+          <modifiers>
+            <modifier type="set" field="hidden" value="true">
+              <conditions>
+                <condition field="selections" scope="1da0-310a-d8fc-25ea" value="0.0" percentValue="false" shared="true" includeChildSelections="false" includeChildForces="false" childId="e488-7f0c-2835-cb55" type="equalTo"/>
+              </conditions>
+            </modifier>
+          </modifiers>
+        </entryLink>
+      </entryLinks>
+      <costs>
+        <cost name="pts" typeId="points" value="64.0"/>
+      </costs>
+    </selectionEntry>
+    <selectionEntry id="a2ad-7e34-7471-914a" name="Gunnery Team" hidden="false" collective="false" import="true" type="upgrade">
+      <constraints>
+        <constraint field="selections" scope="parent" value="1.0" percentValue="false" shared="false" includeChildSelections="false" includeChildForces="false" id="552c-e4f2-abb7-db7b" type="max"/>
+      </constraints>
+      <profiles>
+        <profile id="aed0-7aa6-d1f1-adb3" name="Gunnery Team" hidden="false" typeId="229c-c950-27d2-b599" typeName="3.2 Weapons Team">
+          <characteristics>
+            <characteristic name="Weapons Team Ability" typeId="f63e-d559-f525-14e3">[Concentrate Fire]:  The next attack you perform this activation can be performed from this hull zone.  
+    your hull zones cannot target the same ship or squadron more than once during your activation.</characteristic>
+            <characteristic name="Setup" typeId="1bf9-55e6-8728-ac34"/>
+            <characteristic name="Recur" typeId="4edf-cbf3-3e26-fa72"/>
+            <characteristic name="Ready Cost" typeId="2c53-184d-5e9d-fa22"/>
+          </characteristics>
+        </profile>
+      </profiles>
+      <costs>
+        <cost name="pts" typeId="points" value="7.0"/>
+      </costs>
+    </selectionEntry>
+  </selectionEntries>
+</catalogue>
