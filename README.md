@@ -40,7 +40,7 @@ cargo run -- render https://armada.ryankingston.com/fleet/207536/ -o flotte.pdf
 cargo run -- render https://armada.ryankingston.com/fleet/207536/ -o flotte.pdf --orientation landscape
 ```
 
-Card images are downloaded from the fleet builder the first time they are needed, then cached on disk under the data directory (`data/` by default), next to the saved games.
+Card images are downloaded from the fleet builder the first time they are needed, then cached on disk in `pics/` under the data directory, next to the saved games in `games/`. The data directory is `data/` by default; `--data-dir` or `AFP_DATA_DIR` moves it.
 
 ### Card database
 
@@ -55,17 +55,6 @@ cargo run -- data sync --ref master -o /tmp/armada.json
 ```
 
 The five data files are downloaded over HTTPS at the resolved commit, whose SHA is recorded in the output. Cards are sorted by faction then name, so two runs differ only by their `source` block. Conditional BattleScribe modifiers are not applied: the database holds base values. `data/` is not versioned, because the BSData repository has no license (see Acknowledgments).
-
-### Configuration
-
-| Option        | Environment variable | Default          | Purpose                           |
-|---------------|----------------------|------------------|-----------------------------------|
-| `--bind`      | `AFP_BIND`           | `127.0.0.1:4567` | Address the web server listens on |
-| `--socket`    | `AFP_SOCKET`         | none             | Unix socket to listen on instead of `--bind` |
-| `--data-dir`  | `AFP_DATA_DIR`       | `data`           | Directory of all persistent data  |
-| `--cards-dir` | `AFP_CARDS_DIR`      | `<data-dir>/pics`  | Card image cache directory      |
-| `--games-dir` | `AFP_GAMES_DIR`      | `<data-dir>/games` | Directory of saved multi-player games (`serve` only) |
-|               | `RUST_LOG`           | `info`           | Log filter                        |
 
 ## Development
 

@@ -11,11 +11,11 @@ Armada Fleet Print: a small web app that takes a saved fleet URL from https://ar
 - Build: `cargo build` (edition 2024)
 - Dev server: `./dev.sh`, which runs `cargo run -- serve`. It listens on `127.0.0.1:4567`; pass `--bind` or set `AFP_BIND` to change that, or `--socket`/`AFP_SOCKET` to listen on a Unix socket instead.
 - Render one fleet without the server: `cargo run -- render https://armada.ryankingston.com/fleet/207536/ -o flotte.pdf [--orientation landscape] [--lang en]`
-- Build the card database from BSData (offline tool, not used by the server): `cargo run -- data sync [--ref <git-ref>] [-o data/armada.json]`. `data/` is gitignored because BSData has no license.
+- Build the card database from BSData (offline tool, not used by the server): `cargo run -- data sync [--ref <git-ref>] [-o <file>]`, written to `<data-dir>/armada.json` by default. `data/` is gitignored because BSData has no license.
 - Tests: `cargo test`. Run a single test with `cargo test --test layout drops_trailing_empty_page`, or `cargo test fleet_url::` for unit tests.
 - Lint and format: `cargo clippy --all-targets`, `cargo fmt`
 
-All persistent data lives under the data directory, `data/` relative to the CWD by default (gitignored); override with `--data-dir` or `AFP_DATA_DIR`. Card images are cached in its `pics/` subdirectory and multi-player games saved as JSON files in its `games/` subdirectory, both created on first write; `--cards-dir`/`AFP_CARDS_DIR` and `--games-dir`/`AFP_GAMES_DIR` override them. The server uses no database.
+All persistent data lives under the data directory, `data/` relative to the CWD by default (gitignored); override with `--data-dir` or `AFP_DATA_DIR`. Card images are cached in its `pics/` subdirectory and multi-player games saved as JSON files in its `games/` subdirectory, both created on first write. The server uses no database.
 
 ## Architecture
 

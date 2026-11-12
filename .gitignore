@@ -1,8 +1,5 @@
 /target
 
-# Card images cache (see --cards-dir).
-/pics
-
 .idea
 
 # Local environment file, never versioned.
@@ -14,8 +11,10 @@
 # Output of `render` with its default name.
 /flotte.pdf
 
-# Card database built by `data sync` from BSData, which has no license: not redistributed.
+# Data directory: card image cache, saved games, and the card database built by
+# `data sync` from BSData, which has no license and is not redistributed.
 /data
 
-# Multi-player games saved by the server (see --games-dir).
+# Former locations of the card image cache and saved games, before the data directory.
+/pics
 /games
