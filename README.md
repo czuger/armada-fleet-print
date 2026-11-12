@@ -4,7 +4,7 @@ Turns a fleet saved on [armada.ryankingston.com](https://armada.ryankingston.com
 
 ## Usage
 
-Go to https://apps.ieroe.com/armada/ and paste the link of a saved fleet, for example `https://armada.ryankingston.com/fleet/207536/`. The site is in French and English: it follows the browser's language, and the FR | EN links at the top switch it.
+Open the site and paste the link of a saved fleet, for example `https://armada.ryankingston.com/fleet/207536/`. The site is in French and English: it follows the browser's language, and the FR | EN links at the top switch it.
 
 The PDF uses US Letter pages, in portrait or landscape: pick one with the radio buttons next to « Envoyer ». The choice is kept in a cookie and also applies to the PDF buttons of the game pages. In portrait:
 
@@ -40,7 +40,7 @@ cargo run -- render https://armada.ryankingston.com/fleet/207536/ -o flotte.pdf
 cargo run -- render https://armada.ryankingston.com/fleet/207536/ -o flotte.pdf --orientation landscape
 ```
 
-Card images are downloaded from the fleet builder the first time they are needed, then cached on disk.
+Card images are downloaded from the fleet builder the first time they are needed, then cached on disk under the data directory (`data/` by default), next to the saved games.
 
 ### Card database
 
@@ -62,8 +62,9 @@ The five data files are downloaded over HTTPS at the resolved commit, whose SHA 
 |---------------|----------------------|------------------|-----------------------------------|
 | `--bind`      | `AFP_BIND`           | `127.0.0.1:4567` | Address the web server listens on |
 | `--socket`    | `AFP_SOCKET`         | none             | Unix socket to listen on instead of `--bind` |
-| `--cards-dir` | `AFP_CARDS_DIR`      | `pics`           | Card image cache directory        |
-| `--games-dir` | `AFP_GAMES_DIR`      | `games`          | Directory of saved multi-player games (`serve` only) |
+| `--data-dir`  | `AFP_DATA_DIR`       | `data`           | Directory of all persistent data  |
+| `--cards-dir` | `AFP_CARDS_DIR`      | `<data-dir>/pics`  | Card image cache directory      |
+| `--games-dir` | `AFP_GAMES_DIR`      | `<data-dir>/games` | Directory of saved multi-player games (`serve` only) |
 |               | `RUST_LOG`           | `info`           | Log filter                        |
 
 ## Development

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Armada Fleet Print: a small web app that takes a saved fleet URL from https://armada.ryankingston.com/ and produces a printable PDF of the card images (ships with their upgrades, squadrons, objectives). Live at https://apps.ieroe.com/armada/. The interface is in French and English; card images are never translated.
+Armada Fleet Print: a small web app that takes a saved fleet URL from https://armada.ryankingston.com/ and produces a printable PDF of the card images (ships with their upgrades, squadrons, objectives). The interface is in French and English; card images are never translated.
 
 ## Commands
 
@@ -15,7 +15,7 @@ Armada Fleet Print: a small web app that takes a saved fleet URL from https://ar
 - Tests: `cargo test`. Run a single test with `cargo test --test layout drops_trailing_empty_page`, or `cargo test fleet_url::` for unit tests.
 - Lint and format: `cargo clippy --all-targets`, `cargo fmt`
 
-Card images are cached in `pics/` relative to the CWD (gitignored). Override with `--cards-dir` or `AFP_CARDS_DIR`. Multi-player games are saved as JSON files in `games/` (gitignored); override with `--games-dir` or `AFP_GAMES_DIR`. The server uses no database.
+All persistent data lives under the data directory, `data/` relative to the CWD by default (gitignored); override with `--data-dir` or `AFP_DATA_DIR`. Card images are cached in its `pics/` subdirectory and multi-player games saved as JSON files in its `games/` subdirectory, both created on first write; `--cards-dir`/`AFP_CARDS_DIR` and `--games-dir`/`AFP_GAMES_DIR` override them. The server uses no database.
 
 ## Architecture
 

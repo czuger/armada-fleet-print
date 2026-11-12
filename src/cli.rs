@@ -22,15 +22,23 @@ use crate::web::{AppState, serve};
     about = "Impression de flottes Star Wars: Armada créées sur armada.ryankingston.com"
 )]
 pub struct Cli {
-    /// Directory where downloaded card images are cached.
+    /// Directory holding all persistent data, in subdirectories created on first write.
+    #[arg(
+        long,
+        env = "AFP_DATA_DIR",
+        default_value = "data",
+        global = true,
+        help = "Dossier des données persistantes (images de cartes, parties)"
+    )]
+    pub data_dir: PathBuf,
+    /// Directory where downloaded card images are cached, instead of `<data-dir>/pics`.
     #[arg(
         long,
         env = "AFP_CARDS_DIR",
-        default_value = "pics",
         global = true,
-        help = "Dossier de cache des images de cartes"
+        help = "Dossier de cache des images de cartes (par défaut : <data-dir>/pics)"
     )]
-    pub cards_dir: PathBuf,
+    pub cards_dir: Option<PathBuf>,
     /// Action to run.
     #[command(subcommand)]
     pub command: Command,
@@ -57,14 +65,13 @@ pub enum Command {
             help = "Socket Unix d'écoute (remplace --bind)"
         )]
         socket: Option<PathBuf>,
-        /// Directory where multi-player games are saved.
+        /// Directory where multi-player games are saved, instead of `<data-dir>/games`.
         #[arg(
             long,
             env = "AFP_GAMES_DIR",
-            default_value = "games",
-            help = "Dossier des parties à plusieurs joueurs"
+            help = "Dossier des parties à plusieurs joueurs (par défaut : <data-dir>/games)"
         )]
-        games_dir: PathBuf,
+        games_dir: Option<PathBuf>,
     },
     /// Prints one fleet to a PDF file without starting the server.
     #[command(about = "Imprime une flotte dans un fichier PDF, sans serveur")]
@@ -144,20 +151,32 @@ pub enum CliError {
     Io(#[from] io::Error),
 }
 
+/// Subdirectory of the data directory caching card images.
+const CARDS_SUBDIR: &str = "pics";
+/// Subdirectory of the data directory holding multi-player games.
+const GAMES_SUBDIR: &str = "games";
+
+/// The directory given explicitly, else `subdir` of the data directory.
+fn data_subdir(explicit: Option<PathBuf>, data_dir: &Path, subdir: &str) -> PathBuf {
+    explicit.unwrap_or_else(|| data_dir.join(subdir))
+}
+
 impl Cli {
     /// Runs the selected command.
     ///
     /// # Errors
     /// Returns [`CliError`] if the command fails.
     pub async fn run(self) -> Result<(), CliError> {
+        let cards_dir = data_subdir(self.cards_dir, &self.data_dir, CARDS_SUBDIR);
         match self.command {
             Command::Serve {
                 bind,
                 socket,
                 games_dir,
             } => {
+                let games_dir = data_subdir(games_dir, &self.data_dir, GAMES_SUBDIR);
                 let state = AppState {
-                    printer: FleetPrinter::new(self.cards_dir).map_err(CliError::Client)?,
+                    printer: FleetPrinter::new(cards_dir).map_err(CliError::Client)?,
                     games: GameService::new(games_dir).map_err(CliError::Client)?,
                 };
                 serve(bind, socket.as_deref(), state).await?;
@@ -168,7 +187,7 @@ impl Cli {
                 orientation,
                 lang,
             } => {
-                let printer = FleetPrinter::new(self.cards_dir).map_err(CliError::Client)?;
+                let printer = FleetPrinter::new(cards_dir).map_err(CliError::Client)?;
                 let pdf = printer
                     .print(&FleetUrl::parse(&url)?, orientation, lang)
                     .await?;
@@ -205,4 +224,43 @@ fn print_summary(database: &ArmadaDatabase, output: &Path) {
         database.upgrades.len(),
         database.objectives.len()
     );
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn serve_dirs(args: &[&str]) -> (PathBuf, PathBuf) {
+        let cli = Cli::try_parse_from(args).unwrap();
+        let Command::Serve { games_dir, .. } = cli.command else {
+            panic!("expected serve");
+        };
+        (
+            data_subdir(cli.cards_dir, &cli.data_dir, CARDS_SUBDIR),
+            data_subdir(games_dir, &cli.data_dir, GAMES_SUBDIR),
+        )
+    }
+
+    #[test]
+    fn data_subdirectories_follow_data_dir() {
+        let (cards, games) = serve_dirs(&["afp", "serve", "--data-dir", "/srv/afp"]);
+        assert_eq!(cards, Path::new("/srv/afp/pics"));
+        assert_eq!(games, Path::new("/srv/afp/games"));
+    }
+
+    #[test]
+    fn explicit_directories_win_over_data_dir() {
+        let (cards, games) = serve_dirs(&[
+            "afp",
+            "serve",
+            "--data-dir",
+            "/srv/afp",
+            "--cards-dir",
+            "/cache/cards",
+            "--games-dir",
+            "/var/games",
+        ]);
+        assert_eq!(cards, Path::new("/cache/cards"));
+        assert_eq!(games, Path::new("/var/games"));
+    }
 }
