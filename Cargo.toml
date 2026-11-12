@@ -33,26 +33,37 @@ tower = { version = "0.5.3", features = ["util"] }
 # the cargo-deploy README. Every key is optional; the commented values are the defaults.
 [package.metadata.deploy]
 description = "armada-fleet-print (impression de flottes Star Wars: Armada)"
+
 # Sub-path nginx serves the app under.
 url-prefix = "/armada"
+
 # The socket path is passed to the app as <PREFIX>_SOCKET, its persistent data
 # directory ($REMOTE_DIR/data, shared by all releases) as <PREFIX>_DATA_DIR.
 env-prefix = "AFP"
+
 # Arguments after the binary in ExecStart.
 # args = ["serve"]
+
 # `cargo deploy setup` creates a random secret_key.txt in the data directory if
 # there is none (--new-secret-key replaces it).
 # secret-key = false
+
 # Extra service environment; NO_COLOR=1 is always set.
 # env = { RUST_LOG = "info" }
+
 # A print fetches the fleet page and every card image not cached yet.
 proxy-read-timeout = "120s"
+
 # Probed after each restart: must answer quickly, without network access.
-# health-path = "/"
+health-path = "/health"
+
 # Outgoing connections (API, remote database, SMTP...): off by default, the app
 # then only has its Unix socket.
 network = true
+
 # Extra [Service] directives, after the built-in sandbox, e.g. to relax it.
 # unit-extra = ["MemoryDenyWriteExecute=no", "MemoryMax=512M"]
+
 # build-target = "x86_64-unknown-linux-gnu"
+
 # keep-releases = 3

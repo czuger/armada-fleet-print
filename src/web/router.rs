@@ -26,7 +26,8 @@ use crate::web::web_error::WebError;
 
 /// Builds the application: `GET /` shows the form, `POST /print` returns the fleet PDF,
 /// `GET /lang` switches the language, and `/games` holds the multi-player games. Every page
-/// is in the language of the request (see `localize`).
+/// is in the language of the request (see `localize`). `GET /health` answers `OK` for the
+/// deployment health check; it is added after the `localize` layer, so it skips it.
 ///
 /// # Arguments
 /// * `state` - Services shared by all requests.
@@ -43,7 +44,13 @@ pub fn router(state: AppState) -> Router {
         .route("/games/{id}/replace", post(replace_fleet))
         .route("/games/{id}/fleets/{fleet}/delete", post(remove_fleet))
         .layer(middleware::from_fn(localize))
+        .route("/health", get(health))
         .with_state(state)
+}
+
+/// Reads nothing, so it answers as soon as the server accepts requests.
+async fn health() -> &'static str {
+    "OK"
 }
 
 #[derive(Debug, Deserialize)]

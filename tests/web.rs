@@ -435,3 +435,12 @@ async fn replacing_a_removed_fleet_is_explained() {
     assert!(body.contains(r#"<form id="fleet-form" action="fleets""#));
     assert!(body.contains(r#"name="player" value="Bob""#));
 }
+
+#[tokio::test]
+async fn health_answers_ok_without_cookie() {
+    let request = Request::get("/health").body(Body::empty()).unwrap();
+    let response = app().oneshot(request).await.unwrap();
+
+    assert_eq!(response.status(), StatusCode::OK);
+    assert_eq!(body_text(response).await, "OK");
+}
