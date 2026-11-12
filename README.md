@@ -1,10 +1,10 @@
 # Armada Fleet Print
 
-Turns a fleet saved on [armada.ryankingston.com](https://armada.ryankingston.com/) into a printable PDF of its card images.
+Turns a fleet saved on [armada.ryankingston.com](https://armada.ryankingston.com/) into a printable PDF of its card images. It is online at [apps.ieroe.com/armada](https://apps.ieroe.com/armada/).
 
 ## Usage
 
-Open the site and paste the link of a saved fleet, for example `https://armada.ryankingston.com/fleet/207536/`. The site is in French and English: it follows the browser's language, and the FR | EN links at the top switch it.
+Go to https://apps.ieroe.com/armada/ and paste the link of a saved fleet, for example `https://armada.ryankingston.com/fleet/207536/`. The site is in French and English: it follows the browser's language, and the FR | EN links at the top switch it.
 
 The PDF uses US Letter pages, in portrait or landscape: pick one with the radio buttons next to « Envoyer ». The choice is kept in a cookie and also applies to the PDF buttons of the game pages. In portrait:
 
